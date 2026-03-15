@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,202 +8,300 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    body { font-family:'Inter',sans-serif; background:#f1f5f9; }
-    .stat-card {
-      padding: 1.5rem; border-radius: 1rem; color: white; position: relative; overflow: hidden;
-      display: flex; justify-content: space-between; align-items: center;
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f1f5f9;
     }
-    .stat-icon { font-size: 3rem; opacity: 0.2; position: absolute; right: -0.5rem; bottom: -0.5rem; }
-    .data-table { width: 100%; border-collapse: collapse; }
-    .data-table th { text-align: left; padding: 12px 24px; font-size: 11px; text-transform: uppercase; color: #64748b; font-weight: 700; border-bottom: 1px solid #f1f5f9; }
-    .data-table td { padding: 16px 24px; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
-    .badge { padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-    .badge-pending { background: #fef3c7; color: #d97706; }
-    .badge-accepted { background: #dcfce7; color: #16a34a; }
-    .badge-rejected { background: #fee2e2; color: #dc2626; }
-    .badge-reviewed { background: #dbeafe; color: #2563eb; }
-    .btn-view { padding: 6px 12px; border-radius: 6px; background: #f1f5f9; color: #475569; font-size: 12px; font-weight: 600; transition: 0.2s; }
-    .btn-view:hover { background: #e2e8f0; color: #1e293b; }
-    
-    .admin-sidebar { background: #1e1b4b; color: white; width: 260px; height: 100vh; position: sticky; top: 0; }
-    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: #a5b4fc; transition: 0.2s; font-size: 14px; font-weight: 500; }
-    .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
-    .nav-item.active { background: #4f46e5; color: white; }
+
+    .stat-card {
+      padding: 1.5rem;
+      border-radius: 1rem;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stat-icon {
+      font-size: 3rem;
+      opacity: 0.2;
+      position: absolute;
+      right: -0.5rem;
+      bottom: -0.5rem;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 12px 24px;
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #64748b;
+      font-weight: 700;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .data-table td {
+      padding: 16px 24px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-pending {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .badge-accepted {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    .badge-rejected {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    .badge-reviewed {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+
+    .btn-view {
+      padding: 6px 12px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 12px;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .btn-view:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+
+    .admin-sidebar {
+      background: #1e1b4b;
+      color: white;
+      width: 260px;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      color: #a5b4fc;
+      transition: 0.2s;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+    }
+
+    .nav-item.active {
+      background: #4f46e5;
+      color: white;
+    }
   </style>
 </head>
+
 <body class="hidden" id="bodyContent">
-<div class="flex h-screen overflow-hidden">
+  <div class="flex h-screen overflow-hidden">
 
-  <!-- ===== SIDEBAR ===== -->
-  <aside class="admin-sidebar hidden md:flex flex-col py-6">
-    <div class="flex items-center gap-3 px-6 mb-8">
-      <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center">
-        <i class="fa-solid fa-graduation-cap text-white text-lg"></i>
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="admin-sidebar hidden md:flex flex-col py-6">
+      <div class="flex items-center gap-3 px-6 mb-8">
+        <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center">
+          <i class="fa-solid fa-graduation-cap text-white text-lg"></i>
+        </div>
+        <div>
+          <p class="text-white font-bold text-sm leading-tight">School Admin</p>
+          <p class="text-indigo-400 text-xs">Management Panel</p>
+        </div>
       </div>
-      <div>
-        <p class="text-white font-bold text-sm leading-tight">School Admin</p>
-        <p class="text-indigo-400 text-xs">Management Panel</p>
+      <nav class="flex-1 space-y-0.5">
+        <p class="text-indigo-500 text-xs font-bold uppercase tracking-widest px-7 mb-2">Main Menu</p>
+        <a href="dashboard.html" class="nav-item active"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+        <a href="view_applications.html" class="nav-item"><i class="fa-solid fa-file-lines"></i> Applications</a>
+        <a href="view_applications.html?status=Pending" class="nav-item"><i class="fa-solid fa-hourglass-half"></i>
+          Pending</a>
+        <a href="view_applications.html?status=Accepted" class="nav-item"><i class="fa-solid fa-circle-check"></i>
+          Accepted</a>
+        <a href="view_applications.html?status=Rejected" class="nav-item" style="color:#fca5a5"><i
+            class="fa-solid fa-circle-xmark"></i> Rejected</a>
+        <div class="my-4 border-t border-white/10 mx-5"></div>
+        <p class="text-indigo-500 text-xs font-bold uppercase tracking-widest px-7 mb-2">External</p>
+        <a href="../index.html" target="_blank" class="nav-item"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+          Admission Form</a>
+      </nav>
+      <div class="px-5 mt-auto">
+        <button onclick="handleLogout()"
+          class="flex items-center gap-2 text-sm text-red-300 hover:text-red-100 font-medium px-2 py-2 transition w-full">
+          <i class="fa-solid fa-right-from-bracket"></i> Logout
+        </button>
       </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <div class="flex-1 overflow-auto bg-slate-50">
+      <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+        <div>
+          <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
+          <p class="text-xs text-gray-400">Welcome back, <span id="admin_name">Admin</span></p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-xs bg-green-100 text-green-700 font-semibold px-3 py-1 rounded-full">
+            <i class="fa-solid fa-circle text-xs mr-1"></i> Online
+          </span>
+        </div>
+      </header>
+
+      <main class="p-6 space-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+          <div class="stat-card" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
+            <div>
+              <p class="text-indigo-200 text-xs font-semibold uppercase tracking-wider">Total Applications</p>
+              <p class="text-4xl font-extrabold mt-1" id="stat_total">0</p>
+            </div>
+            <div class="stat-icon"><i class="fa-solid fa-file-lines"></i></div>
+          </div>
+          <div class="stat-card" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+            <div>
+              <p class="text-amber-100 text-xs font-semibold uppercase tracking-wider">Pending Review</p>
+              <p class="text-4xl font-extrabold mt-1" id="stat_pending">0</p>
+            </div>
+            <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+          </div>
+          <div class="stat-card" style="background:linear-gradient(135deg,#10b981,#059669)">
+            <div>
+              <p class="text-emerald-100 text-xs font-semibold uppercase tracking-wider">Accepted</p>
+              <p class="text-4xl font-extrabold mt-1" id="stat_accepted">0</p>
+            </div>
+            <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+          </div>
+          <div class="stat-card" style="background:linear-gradient(135deg,#ec4899,#be185d)">
+            <div>
+              <p class="text-pink-100 text-xs font-semibold uppercase tracking-wider">Today</p>
+              <p class="text-4xl font-extrabold mt-1" id="stat_today">0</p>
+            </div>
+            <div class="stat-icon"><i class="fa-solid fa-calendar-day"></i></div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100">
+          <div class="px-6 py-4 border-b flex items-center justify-between">
+            <h3 class="font-bold text-gray-700 flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-indigo-500"></i> Recent Applications
+            </h3>
+            <a href="view_applications.html" class="text-xs text-indigo-600 hover:underline font-semibold">View All
+              →</a>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#ID</th>
+                  <th>Student Name</th>
+                  <th>Class</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="recentTable">
+                <tr>
+                  <td colspan="7" class="text-center text-gray-400 py-12">Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
-    <nav class="flex-1 space-y-0.5">
-      <p class="text-indigo-500 text-xs font-bold uppercase tracking-widest px-7 mb-2">Main Menu</p>
-      <a href="dashboard.html" class="nav-item active"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
-      <a href="view_applications.html" class="nav-item"><i class="fa-solid fa-file-lines"></i> Applications</a>
-      <a href="view_applications.html?status=Pending" class="nav-item"><i class="fa-solid fa-hourglass-half"></i> Pending</a>
-      <a href="view_applications.html?status=Accepted" class="nav-item"><i class="fa-solid fa-circle-check"></i> Accepted</a>
-      <a href="view_applications.html?status=Rejected" class="nav-item" style="color:#fca5a5"><i class="fa-solid fa-circle-xmark"></i> Rejected</a>
-      <div class="my-4 border-t border-white/10 mx-5"></div>
-      <p class="text-indigo-500 text-xs font-bold uppercase tracking-widest px-7 mb-2">External</p>
-      <a href="../index.html" target="_blank" class="nav-item"><i class="fa-solid fa-arrow-up-right-from-square"></i> Admission Form</a>
-    </nav>
-    <div class="px-5 mt-auto">
-      <button onclick="handleLogout()" class="flex items-center gap-2 text-sm text-red-300 hover:text-red-100 font-medium px-2 py-2 transition w-full">
-        <i class="fa-solid fa-right-from-bracket"></i> Logout
-      </button>
-    </div>
-  </aside>
-
-  <!-- ===== MAIN ===== -->
-  <div class="flex-1 overflow-auto bg-slate-50">
-    <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-30">
-      <div>
-        <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
-        <p class="text-xs text-gray-400">Welcome back, <span id="admin_name">Admin</span></p>
-      </div>
-      <div class="flex items-center gap-3">
-        <span class="text-xs bg-green-100 text-green-700 font-semibold px-3 py-1 rounded-full">
-          <i class="fa-solid fa-circle text-xs mr-1"></i> Online
-        </span>
-      </div>
-    </header>
-
-    <main class="p-6 space-y-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-        <div class="stat-card" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
-          <div>
-            <p class="text-indigo-200 text-xs font-semibold uppercase tracking-wider">Total Applications</p>
-            <p class="text-4xl font-extrabold mt-1" id="stat_total">0</p>
-          </div>
-          <div class="stat-icon"><i class="fa-solid fa-file-lines"></i></div>
-        </div>
-        <div class="stat-card" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
-          <div>
-            <p class="text-amber-100 text-xs font-semibold uppercase tracking-wider">Pending Review</p>
-            <p class="text-4xl font-extrabold mt-1" id="stat_pending">0</p>
-          </div>
-          <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
-        </div>
-        <div class="stat-card" style="background:linear-gradient(135deg,#10b981,#059669)">
-          <div>
-            <p class="text-emerald-100 text-xs font-semibold uppercase tracking-wider">Accepted</p>
-            <p class="text-4xl font-extrabold mt-1" id="stat_accepted">0</p>
-          </div>
-          <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
-        </div>
-        <div class="stat-card" style="background:linear-gradient(135deg,#ec4899,#be185d)">
-          <div>
-            <p class="text-pink-100 text-xs font-semibold uppercase tracking-wider">Today</p>
-            <p class="text-4xl font-extrabold mt-1" id="stat_today">0</p>
-          </div>
-          <div class="stat-icon"><i class="fa-solid fa-calendar-day"></i></div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100">
-        <div class="px-6 py-4 border-b flex items-center justify-between">
-          <h3 class="font-bold text-gray-700 flex items-center gap-2">
-            <i class="fa-solid fa-clock-rotate-left text-indigo-500"></i> Recent Applications
-          </h3>
-          <a href="view_applications.html" class="text-xs text-indigo-600 hover:underline font-semibold">View All →</a>
-        </div>
-        <div class="overflow-x-auto">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>#ID</th>
-                <th>Student Name</th>
-                <th>Class</th>
-                <th>Phone</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="recentTable">
-              <tr><td colspan="7" class="text-center text-gray-400 py-12">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </main>
   </div>
-</div>
 
-<script>
-  const SUPABASE_URL = 'https://jqvgwrodaiflbypltjdy.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxdmd3cm9kYWlmbGJ5cGx0amR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODU0NzgsImV4cCI6MjA4OTE2MTQ3OH0.1LuaunIGVMXP6Lp4D9Kw9ye0-Rgeo_SW_ZFKCr2PoUY';
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  <script>
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVz4w18ShRebQeUjKkS2xsYz8AzxoEsNG0Sb0pzWnmgadrJlA6xrySVbLY198gLOyP/exec';
+    const adminPassword = localStorage.getItem('admin_password');
 
-  async function checkAuth() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) {
-      window.location.href = 'login.html';
-      return;
-    }
-    document.getElementById('bodyContent').classList.remove('hidden');
-    const name = session.user.email.split('@')[0];
-    document.getElementById('admin_name').textContent = name.charAt(0).toUpperCase() + name.slice(1);
-    loadStats();
-  }
-
-  async function loadStats() {
-    try {
-      // Fetch all to calculate stats (simple version)
-      const { data: allApps, error } = await supabaseClient
-        .from('applications')
-        .select('id, status, created_at');
-
-      if (error) throw error;
-      
-      const total = allApps.length;
-      let pending = 0;
-      let accepted = 0;
-      let today_cnt = 0;
-      const today = new Date().toISOString().split('T')[0];
-
-      allApps.forEach(app => {
-        if (app.status === 'Pending') pending++;
-        if (app.status === 'Accepted') accepted++;
-        if (app.created_at.split('T')[0] === today) today_cnt++;
-      });
-
-      document.getElementById('stat_total').textContent = total;
-      document.getElementById('stat_pending').textContent = pending;
-      document.getElementById('stat_accepted').textContent = accepted;
-      document.getElementById('stat_today').textContent = today_cnt;
-
-      // Recent Applications
-      const { data: recent, error: recentError } = await supabaseClient
-        .from('applications')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(5);
-
-      if (recentError) throw recentError;
-
-      const tbody = document.getElementById('recentTable');
-      tbody.innerHTML = '';
-      
-      if (recent.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-gray-400 py-12">No applications yet.</td></tr>';
+    function checkAuth() {
+      if (!adminPassword) {
+        window.location.href = 'login.html';
         return;
       }
+      document.getElementById('bodyContent').classList.remove('hidden');
+      document.getElementById('admin_name').textContent = 'Admin';
+      loadStats();
+    }
 
-      recent.forEach(row => {
-        const date = new Date(row.created_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-        tbody.innerHTML += `
+    async function loadStats() {
+      try {
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_all&password=${adminPassword}`);
+        const result = await response.json();
+
+        if (!result.success) {
+          alert('Session expired or invalid. Please login again.');
+          handleLogout();
+          return;
+        }
+
+        const allApps = result.data;
+        const total = allApps.length;
+        let pending = 0;
+        let accepted = 0;
+        let today_cnt = 0;
+        const today = new Date().toLocaleDateString();
+
+        allApps.forEach(app => {
+          if (app.status === 'Pending') pending++;
+          if (app.status === 'Accepted') accepted++;
+          // GAS returns date as locale string usually, or we can check the 'date' field
+          if (app.date && app.date.split(',')[0] === today) today_cnt++;
+        });
+
+        document.getElementById('stat_total').textContent = total;
+        document.getElementById('stat_pending').textContent = pending;
+        document.getElementById('stat_accepted').textContent = accepted;
+        document.getElementById('stat_today').textContent = today_cnt;
+
+        // Recent Applications (Last 5)
+        const recent = allApps.slice(-5).reverse();
+        const tbody = document.getElementById('recentTable');
+        tbody.innerHTML = '';
+
+        if (recent.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-center text-gray-400 py-12">No applications yet.</td></tr>';
+          return;
+        }
+
+        recent.forEach(row => {
+          tbody.innerHTML += `
           <tr>
             <td class="font-semibold text-indigo-600">#${String(row.id).padStart(4, '0')}</td>
             <td class="font-medium text-gray-800">${row.student_name}</td>
@@ -211,7 +310,7 @@
             <td>
               <span class="badge badge-${row.status.toLowerCase()}">${row.status}</span>
             </td>
-            <td class="text-gray-500 text-xs">${date}</td>
+            <td class="text-gray-500 text-xs">${row.date}</td>
             <td>
               <a href="view_applications.html?id=${row.id}" class="btn-view">
                 <i class="fa-solid fa-eye"></i> View
@@ -219,20 +318,21 @@
             </td>
           </tr>
         `;
-      });
+        });
 
-    } catch (err) {
-      console.error(err);
-      alert('Error loading dashboard stats.');
+      } catch (err) {
+        console.error(err);
+        alert('Error loading dashboard stats.');
+      }
     }
-  }
 
-  async function handleLogout() {
-    await supabaseClient.auth.signOut();
-    window.location.href = 'login.html';
-  }
+    function handleLogout() {
+      localStorage.removeItem('admin_password');
+      window.location.href = 'login.html';
+    }
 
-  checkAuth();
-</script>
+    checkAuth();
+  </script>
 </body>
+
 </html>

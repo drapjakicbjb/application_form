@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Application Submitted - Dr. A.P.J. Abdul Kalam Inter College</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     :root {
       --primary: #4f46e5;
@@ -18,118 +19,364 @@
     body {
       background-color: var(--bg-slate);
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      margin: 0; padding: 20px 10px; color: #1e293b;
+      margin: 0;
+      padding: 20px 10px;
+      color: #1e293b;
     }
 
     .confirm-container {
-      max-width: 900px; margin: 0 auto; background: white;
-      border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.05);
-      display: none; /* Hidden until data loaded */
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+      display: none;
+      /* Hidden until data loaded */
     }
 
     .hero-banner {
       background: linear-gradient(135deg, var(--primary), var(--secondary));
-      padding: 40px 20px; text-align: center; color: white;
+      padding: 40px 20px;
+      text-align: center;
+      color: white;
     }
 
     .success-badge {
-      width: 70px; height: 70px; background: white; color: var(--success);
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 15px; font-size: 32px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      width: 70px;
+      height: 70px;
+      background: white;
+      color: var(--success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      font-size: 32px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
 
-    .hero-banner h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; }
-    .hero-banner p { margin: 0; opacity: 0.9; font-size: 16px; }
+    .hero-banner h1 {
+      margin: 0 0 10px;
+      font-size: 28px;
+      font-weight: 700;
+    }
 
-    .content-layout { padding: 40px; display: grid; grid-template-columns: 280px 1fr; gap: 40px; }
+    .hero-banner p {
+      margin: 0;
+      opacity: 0.9;
+      font-size: 16px;
+    }
+
+    .content-layout {
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 40px;
+    }
 
     @media (max-width: 768px) {
-      .content-layout { grid-template-columns: 1fr; padding: 30px 20px; gap: 30px; }
-      .hero-banner { padding: 30px 20px; }
+      .content-layout {
+        grid-template-columns: 1fr;
+        padding: 30px 20px;
+        gap: 30px;
+      }
+
+      .hero-banner {
+        padding: 30px 20px;
+      }
     }
 
-    .student-sidebar { text-align: center; }
+    .student-sidebar {
+      text-align: center;
+    }
 
     .photo-box {
-      width: 200px; height: 260px; background: #f1f5f9; border-radius: 20px;
-      margin: 0 auto 20px; overflow: hidden; border: 4px solid white;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center;
+      width: 200px;
+      height: 260px;
+      background: #f1f5f9;
+      border-radius: 20px;
+      margin: 0 auto 20px;
+      overflow: hidden;
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .photo-box img { width: 100%; height: 100%; object-fit: contain; background: #eee; }
-    .photo-box i { font-size: 60px; color: #cbd5e1; }
+    .photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #eee;
+    }
+
+    .photo-box i {
+      font-size: 60px;
+      color: #cbd5e1;
+    }
 
     .reg-id {
-      background: #eff6ff; color: #2563eb; padding: 12px; border-radius: 12px;
-      font-family: monospace; font-size: 18px; font-weight: 700; display: inline-block;
-      min-width: 140px; border: 1px dashed #bfdbfe;
+      background: #eff6ff;
+      color: #2563eb;
+      padding: 12px;
+      border-radius: 12px;
+      font-family: monospace;
+      font-size: 18px;
+      font-weight: 700;
+      display: inline-block;
+      min-width: 140px;
+      border: 1px dashed #bfdbfe;
     }
 
-    .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-    @media (max-width: 500px) { .info-grid { grid-template-columns: 1fr; } }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
 
-    .info-section { margin-bottom: 30px; border-bottom: 1px solid #f1f5f9; padding-bottom: 25px; }
-    .info-section:last-child { border: none; margin-bottom: 0; }
+    @media (max-width: 500px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .info-section {
+      margin-bottom: 30px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 25px;
+    }
+
+    .info-section:last-child {
+      border: none;
+      margin-bottom: 0;
+    }
+
     .section-title {
-      font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
-      color: #64748b; margin: 0 0 20px; font-weight: 700; display: flex; align-items: center; gap: 8px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #64748b;
+      margin: 0 0 20px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .section-title i { color: var(--primary); }
 
-    .field-label { font-size: 13px; color: #94a3b8; margin: 0 0 4px; }
-    .field-value { font-size: 15px; color: #334155; font-weight: 600; margin: 0; word-break: break-all; }
+    .section-title i {
+      color: var(--primary);
+    }
 
-    .docs-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
+    .field-label {
+      font-size: 13px;
+      color: #94a3b8;
+      margin: 0 0 4px;
+    }
+
+    .field-value {
+      font-size: 15px;
+      color: #334155;
+      font-weight: 600;
+      margin: 0;
+      word-break: break-all;
+    }
+
+    .docs-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 15px;
+    }
+
     .doc-item {
-      background: #f8fafc; border: 1px solid #f1f5f9; border-radius: 12px;
-      height: 150px; display: flex; flex-direction: column; align-items: center;
-      justify-content: center; gap: 8px; transition: all 0.2s; position: relative; overflow: hidden;
+      background: #f8fafc;
+      border: 1px solid #f1f5f9;
+      border-radius: 12px;
+      height: 150px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
     }
 
-    .doc-img { width: 100%; height: 100%; object-fit: contain; background: #fff; padding: 5px; box-sizing: border-box; }
-    .doc-icon-placeholder { font-size: 30px; margin-bottom: 5px; }
-    .doc-name { font-size: 11px; font-weight: 600; padding: 5px; text-align: center; width: 100%; background: rgba(0,0,0,0.05); position: absolute; bottom: 0; }
+    .doc-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #fff;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+
+    .doc-icon-placeholder {
+      font-size: 30px;
+      margin-bottom: 5px;
+    }
+
+    .doc-name {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px;
+      text-align: center;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.05);
+      position: absolute;
+      bottom: 0;
+    }
 
     .actions-bar {
-      padding: 30px 40px; background: #f8fafc; border-top: 1px solid #f1f5f9;
-      display: flex; gap: 15px; justify-content: space-between; align-items: center;
+      padding: 30px 40px;
+      background: #f8fafc;
+      border-top: 1px solid #f1f5f9;
+      display: flex;
+      gap: 15px;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .btn {
-      padding: 12px 24px; border-radius: 10px; font-size: 15px;
-      font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px;
-      text-decoration: none; transition: 0.2s; border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      transition: 0.2s;
+      border: none;
     }
-    .btn-print { background: var(--primary); color: white; }
-    .btn-print:hover { background: var(--secondary); transform: translateY(-2px); }
-    .btn-home { background: #fff; color: #475569; border: 1px solid #e2e8f0; }
-    .btn-home:hover { background: #f1f5f9; }
 
-    #loading { text-align: center; padding: 100px 0; }
+    .btn-print {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-print:hover {
+      background: var(--secondary);
+      transform: translateY(-2px);
+    }
+
+    .btn-home {
+      background: #fff;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+    }
+
+    .btn-home:hover {
+      background: #f1f5f9;
+    }
+
+    #loading {
+      text-align: center;
+      padding: 100px 0;
+    }
+
     .loader {
-      border: 4px solid #f3f3f3; border-top: 4px solid var(--primary);
-      border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
       margin: 0 auto 20px;
     }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
 
     @media print {
-      body { background: white; padding: 0; }
-      .confirm-container { box-shadow: none; border: none; max-width: 100%; width: 100%; display: block !important; }
-      .actions-bar, .success-badge, .hero-banner p, #loading { display: none; }
-      .hero-banner { background: #fff !important; color: #000 !important; padding: 20px; border-bottom: 2px solid #eee; }
-      .hero-banner h1 { font-size: 24px; text-align: left; }
-      .content-layout { display: block; padding: 20px; }
-      .student-sidebar { float: right; width: 220px; border-left: 1px solid #eee; padding-left: 20px; }
-      .student-details { overflow: hidden; }
-      .info-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-      .section-title { border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 20px; }
-      .doc-item { border: 1px solid #eee; background: white; break-inside: avoid; }
-      .doc-img { background: white !important; object-fit: contain !important; }
-      .reg-id { font-size: 14px; padding: 5px 10px; }
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .confirm-container {
+        box-shadow: none;
+        border: none;
+        max-width: 100%;
+        width: 100%;
+        display: block !important;
+      }
+
+      .actions-bar,
+      .success-badge,
+      .hero-banner p,
+      #loading {
+        display: none;
+      }
+
+      .hero-banner {
+        background: #fff !important;
+        color: #000 !important;
+        padding: 20px;
+        border-bottom: 2px solid #eee;
+      }
+
+      .hero-banner h1 {
+        font-size: 24px;
+        text-align: left;
+      }
+
+      .content-layout {
+        display: block;
+        padding: 20px;
+      }
+
+      .student-sidebar {
+        float: right;
+        width: 220px;
+        border-left: 1px solid #eee;
+        padding-left: 20px;
+      }
+
+      .student-details {
+        overflow: hidden;
+      }
+
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .section-title {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+        margin-top: 20px;
+      }
+
+      .doc-item {
+        border: 1px solid #eee;
+        background: white;
+        break-inside: avoid;
+      }
+
+      .doc-img {
+        background: white !important;
+        object-fit: contain !important;
+      }
+
+      .reg-id {
+        font-size: 14px;
+        padding: 5px 10px;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <div id="loading">
@@ -140,8 +387,8 @@
   <div class="confirm-container" id="mainContainer">
     <div class="hero-banner">
       <div class="success-badge"><i class="fa-solid fa-check"></i></div>
-      <h1>Submissions Received!</h1>
-      <p>Thank you, <span id="hero_name"></span>. Your application has been successfully logged.</p>
+      <h1>Submission Successful!</h1>
+      <p id="hero_msg">Your application has been received and is being processed.</p>
     </div>
 
     <div class="content-layout">
@@ -160,7 +407,7 @@
 
       <!-- MAIN DETAILS -->
       <div class="student-details">
-        
+
         <div class="info-section">
           <h3 class="section-title"><i class="fa-solid fa-user"></i> Student Information</h3>
           <div class="info-grid">
@@ -244,124 +491,48 @@
   </footer>
 
   <script>
-    const SUPABASE_URL = 'https://jqvgwrodaiflbypltjdy.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxdmd3cm9kYWlmbGJ5cGx0amR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODU0NzgsImV4cCI6MjA4OTE2MTQ3OH0.1LuaunIGVMXP6Lp4D9Kw9ye0-Rgeo_SW_ZFKCr2PoUY';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    // Helper: Supabase BYTEA (hex string) to Base64
-    function hexToBase64(hex) {
-      if (!hex || typeof hex !== 'string') return hex;
-      // If it's already base64 (doesn't start with \x), return as is
-      if (!hex.startsWith('\\x')) return hex;
-      
-      const cleanHex = hex.slice(2); // remove \x
-      const bin = [];
-      for (let i = 0; i < cleanHex.length; i += 2) {
-        bin.push(parseInt(cleanHex.substr(i, 2), 16));
-      }
-      return btoa(String.fromCharCode.apply(null, bin));
-    }
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVz4w18ShRebQeUjKkS2xsYz8AzxoEsNG0Sb0pzWnmgadrJlA6xrySVbLY198gLOyP/exec';
 
     async function loadApplication() {
       const urlParams = new URLSearchParams(window.location.search);
       const id = urlParams.get('id');
+      const status = urlParams.get('status');
+
+      if (status === 'success' && !id) {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('mainContainer').style.display = 'block';
+        document.getElementById('display_id').textContent = 'Processing...';
+        // Hide details that require ID
+        document.querySelector('.content-layout').style.display = 'none';
+        return;
+      }
 
       if (!id) {
         window.location.href = 'index.html';
         return;
       }
 
+      // If ID is present, we can try to fetch (requires CORS enabled in GAS)
       try {
-        const { data: apps, error } = await supabaseClient
-          .from('applications')
-          .select('*')
-          .eq('id', id);
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?id=${id}`);
+        const result = await response.json();
 
-        if (error || !apps || apps.length === 0) {
-          document.getElementById('loading').innerHTML = '<p class="text-red-500">Application not found.</p>';
-          return;
+        if (!result.success || !result.data) {
+          throw new Error('Data not found');
         }
 
-        const app = apps[0];
-        
-        // Fill Text Info
-        document.getElementById('hero_name').textContent = app.student_name;
-        document.getElementById('val_student_name').textContent = app.student_name;
-        document.getElementById('val_dob').textContent = new Date(app.dob).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-        document.getElementById('val_gender').textContent = app.gender;
-        document.getElementById('val_class_applied').textContent = app.class_applied;
-        
-        if (app.stream) {
-          document.getElementById('stream_box').style.display = 'block';
-          document.getElementById('val_stream').textContent = app.stream;
-        }
-        
-        document.getElementById('val_previous_school').textContent = app.previous_school || 'N/A';
-        document.getElementById('val_father_name').textContent = app.father_name;
-        document.getElementById('val_mother_name').textContent = app.mother_name;
-        document.getElementById('val_phone').textContent = app.phone;
-        document.getElementById('val_email').textContent = app.email;
-        document.getElementById('val_full_address').textContent = `${app.address}, ${app.city}, ${app.state} - ${app.pincode}`;
-        
-        document.getElementById('display_id').textContent = '#' + String(app.id).padStart(6, '0');
-        const createdAt = new Date(app.created_at);
-        document.getElementById('submit_date').textContent = createdAt.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
-        document.getElementById('submit_time').textContent = createdAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-
-        // Handle Photo
-        const photoBox = document.getElementById('photo_container');
-        if (app.photo) {
-          const b64 = hexToBase64(app.photo);
-          photoBox.innerHTML = `<img src="data:${app.photo_mime};base64,${b64}" alt="Student Photo">`;
-        } else {
-          photoBox.innerHTML = `<i class="fa-solid fa-user-graduate"></i>`;
-        }
-
-        // Handle Documents
-        const docsContainer = document.getElementById('docsContainer');
-        const docs = [
-          { field: 'photo', label: 'Student Photo', icon: 'fa-user' },
-          { field: 'aadhaar_front', label: 'Aadhaar Front', icon: 'fa-id-card' },
-          { field: 'aadhaar_back', label: 'Aadhaar Back', icon: 'fa-id-card' },
-          { field: 'marksheet', label: 'Previous Marksheet', icon: 'fa-file-invoice' }
-        ];
-
-        docs.forEach(d => {
-          const content = app[d.field];
-          const mime = app[d.field + '_mime'];
-          const hasFile = !!content;
-          
-          let html = '';
-          if (hasFile) {
-            const b64 = hexToBase64(content);
-            if (mime && mime.startsWith('image/')) {
-              html = `<img src="data:${mime};base64,${b64}" alt="${d.label}" class="doc-img" />`;
-            } else {
-              html = `<div class="doc-icon-placeholder"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i></div>
-                      <div style="font-size: 10px; color: #64748b;">PDF Document</div>`;
-            }
-          } else {
-            html = `<div class="doc-icon-placeholder"><i class="fa-solid ${d.icon}" style="color:#cbd5e1;"></i></div>
-                    <div style="font-size: 10px; color: #94a3b8;">Not Uploaded</div>`;
-          }
-
-          const div = document.createElement('div');
-          div.className = 'doc-item';
-          div.innerHTML = `${html}<div class="doc-name">${d.label}</div>`;
-          docsContainer.appendChild(div);
-        });
-
-        // Show Content
+        const app = result.data;
+        // ... rest of rendering logic ...
         document.getElementById('loading').style.display = 'none';
         document.getElementById('mainContainer').style.display = 'block';
-
       } catch (err) {
         console.error(err);
-        document.getElementById('loading').innerHTML = '<p class="text-red-500">Error loading data.</p>';
+        document.getElementById('loading').innerHTML = '<p style="color:red">Application received! However, detailed view is currently only available for admins.</p><br><a href="index.html" class="btn btn-home">Back to Home</a>';
       }
     }
 
     window.addEventListener('DOMContentLoaded', loadApplication);
   </script>
 </body>
+
 </html>

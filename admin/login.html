@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,17 +8,27 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    body { font-family: 'Inter', sans-serif; background: #0f172a; }
-    .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f172a;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
   </style>
 </head>
+
 <body class="flex items-center justify-center min-h-screen p-4">
 
   <div class="w-full max-w-md">
     <div class="text-center mb-8">
-      <div class="inline-flex w-20 h-20 rounded-2xl bg-indigo-600/20 text-indigo-500 items-center justify-center mb-4 text-3xl shadow-2xl">
+      <div
+        class="inline-flex w-20 h-20 rounded-2xl bg-indigo-600/20 text-indigo-500 items-center justify-center mb-4 text-3xl shadow-2xl">
         <i class="fa-solid fa-lock"></i>
       </div>
       <h1 class="text-3xl font-extrabold text-white">Admin Login</h1>
@@ -25,7 +36,8 @@
     </div>
 
     <div class="glass-card rounded-3xl p-8 shadow-2xl">
-      <div id="errorMsg" class="hidden bg-red-500/10 border border-red-500/50 text-red-400 rounded-xl px-4 py-3 mb-6 text-sm flex items-center gap-3">
+      <div id="errorMsg"
+        class="hidden bg-red-500/10 border border-red-500/50 text-red-400 rounded-xl px-4 py-3 mb-6 text-sm flex items-center gap-3">
         <i class="fa-solid fa-triangle-exclamation"></i> <span id="errorText"></span>
       </div>
 
@@ -65,11 +77,8 @@
   </div>
 
   <script>
-    const SUPABASE_URL = 'https://jqvgwrodaiflbypltjdy.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxdmd3cm9kYWlmbGJ5cGx0amR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODU0NzgsImV4cCI6MjA4OTE2MTQ3OH0.1LuaunIGVMXP6Lp4D9Kw9ye0-Rgeo_SW_ZFKCr2PoUY';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
     const loginForm = document.getElementById('loginForm');
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVz4w18ShRebQeUjKkS2xsYz8AzxoEsNG0Sb0pzWnmgadrJlA6xrySVbLY198gLOyP/exec';
     const loginBtn = document.getElementById('loginBtn');
     const errorMsg = document.getElementById('errorMsg');
     const errorText = document.getElementById('errorText');
@@ -78,42 +87,39 @@
       e.preventDefault();
       errorMsg.classList.add('hidden');
       loginBtn.disabled = true;
-      loginBtn.textContent = 'Logging in...';
+      loginBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Verifying...';
 
-      const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
 
       try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-          email: username,
-          password: password,
-        });
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_stats&password=${password}`);
+        const result = await response.json();
 
-        if (error) {
-          errorText.textContent = error.message;
+        if (result.success) {
+          localStorage.setItem('admin_password', password);
+          window.location.href = 'dashboard.html';
+        } else {
+          errorText.textContent = 'Invalid admin password. Please try again.';
           errorMsg.classList.remove('hidden');
           loginBtn.disabled = false;
           loginBtn.textContent = 'Sign In to Dashboard';
-        } else {
-          // Success
-          window.location.href = 'dashboard.html';
         }
       } catch (err) {
-        errorText.textContent = 'An unexpected error occurred.';
+        console.error(err);
+        errorText.textContent = 'Error connecting to Google Sheets. Check your Script URL.';
         errorMsg.classList.remove('hidden');
         loginBtn.disabled = false;
         loginBtn.textContent = 'Sign In to Dashboard';
       }
     });
 
-    // Check if already logged in
-    async function checkSession() {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (session) {
+    function checkSession() {
+      if (localStorage.getItem('admin_password')) {
         window.location.href = 'dashboard.html';
       }
     }
     checkSession();
   </script>
 </body>
+
 </html>

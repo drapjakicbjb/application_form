@@ -8,39 +8,49 @@ A modern, high-performance admission portal built with **HTML5 + TailwindCSS + J
 
 ```
 Admission Form/
-├── index.html              → Public admission form (Static)
-├── style.css               → Custom CSS (glassmorphism, animations)
-├── script.js               → Validation, Supabase integration, file handling
-├── supabase_schema.sql     → FULL database schema for Supabase
-├── confirmation.html       → Success & confirmation page
-└── admin/
-    ├── login.html           → Admin login (Supabase Auth)
-    ├── dashboard.html       → Live stats & recent applications
-    └── view_applications.html → Full application management panel
-```
+# School Admission System (Google Sheets Edition)
 
----
+This is a modern, static web-based school admission system that stores all data in **Google Sheets** and documents in **Google Drive**. No expensive servers or database subscriptions required!
 
-## ⚙️ Setup Instructions (Supabase)
+## 🚀 Features
+- **Static Website**: Host it anywhere (GitHub Pages, Vercel, Netlify).
+- **Google Sheets Database**: Direct access to your data via a spreadsheet.
+- **Google Drive Storage**: Photos, Aadhaar cards, and marksheets are safely stored in your own Drive.
+- **Admin Dashboard**: Password-protected management panel for reviewing and managing applications.
+- **Multi-language**: Fully supports English and Hindi.
 
-### Step 1 — Create a Supabase Project
-1. Go to [Supabase.com](https://supabase.com/) and create a new project.
-2. Note your **Project URL** and **Anon Key** from the Settings > API tab.
+## 🛠️ Setup Instructions
 
-### Step 2 — Initialize Database
-1. Go to the **SQL Editor** in your Supabase dashboard.
-2. Open the `supabase_schema.sql` file from this project.
-3. Copy and paste the content into the SQL Editor and click **Run**.
-4. This will create the `applications` table and set up Row Level Security (RLS).
+### 1. Google Drive & Sheets Setup
+1. Create a new folder in your Google Drive (e.g., "School Admissions"). **Copy the Folder ID** from the URL.
+2. Create a new Google Sheet inside that folder.
+3. In the Google Sheet, go to **Extensions > Apps Script**.
+4. Copy the code from `google_apps_script.gs` and paste it into the editor.
+5. Replace `YOUR_GOOGLE_DRIVE_FOLDER_ID` with your actual folder ID.
+6. Click **Deploy > New Deployment**.
+7. Select **Web App**.
+   - **Execute as**: Me
+   - **Who has access**: Anyone
+8. Copy the **Web App URL**.
 
-### Step 3 — Update API Keys
-1. Open `script.js`, `admin/login.html`, `admin/dashboard.html`, and `admin/view_applications.html`.
-2. Replace the `SUPABASE_URL` and `SUPABASE_KEY` constants at the top of these files with your own project credentials.
+### 2. Website Configuration
+1. Open `script.js` and replace `YOUR_GOOGLE_SCRIPT_WEB_APP_URL` with your Web App URL.
+2. Open `admin/login.html`, `admin/dashboard.html`, and `admin/view_applications.html` and replace the placeholder URL there as well.
+3. Open `confirmation.html` and update the URL there.
 
-### Step 4 — Set Up Admin User
-1. Go to **Authentication** > **Users** in Supabase.
-2. Click **Add User** > **Create new user**.
-3. Use the **Username** as the email part (e.g., `admin@yoursite.com`) and set your password.
+### 3. Deploy Website
+Simply upload all files to your static hosting provider (like GitHub Pages).
+
+## 🔑 Admin Access
+- The default password is set in `google_apps_script.gs`.
+- URL: `your-site.com/admin/login.html`
+
+## 🗂️ File Structure
+- `index.html`: Main admission form.
+- `script.js`: Frontend logic and form submission.
+- `google_apps_script.gs`: Backend code for Google Workspace.
+- `admin/`: Dashboard and management pages.
+- `assets/`: Static school assets like logos.
 
 ---
 

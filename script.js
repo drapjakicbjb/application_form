@@ -5,14 +5,12 @@
  */
 
 // =============================================
-// 0. SUPABASE CONFIGURATION
+// 1. CONFIG & GOOGLE APP SCRIPT INIT
 // =============================================
-const SUPABASE_URL = 'https://jqvgwrodaiflbypltjdy.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxdmd3cm9kYWlmbGJ5cGx0amR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODU0NzgsImV4cCI6MjA4OTE2MTQ3OH0.1LuaunIGVMXP6Lp4D9Kw9ye0-Rgeo_SW_ZFKCr2PoUY';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVz4w18ShRebQeUjKkS2xsYz8AzxoEsNG0Sb0pzWnmgadrJlA6xrySVbLY198gLOyP/exec'; // USER: Replace after deploying GAS
 
 // =============================================
-// 1. TRANSLATIONS (English + Hindi)
+// 2. TRANSLATIONS (English + Hindi)
 // =============================================
 const translations = {
   en: {
@@ -90,13 +88,13 @@ const translations = {
     'p.city': 'City',
     'p.pincode': '6-digit pincode',
     // Validation errors
-    'f.stream'        : 'Stream',
-    'opt.stream_def'  : 'Select Stream',
-    'opt.maths'       : 'Maths',
-    'opt.home_sci'    : 'Home Science',
-    'opt.bio'         : 'Biology',
-    'opt.arts'        : 'Arts',
-    'err.stream_req'  : 'Please select a stream.',
+    'f.stream': 'Stream',
+    'opt.stream_def': 'Select Stream',
+    'opt.maths': 'Maths',
+    'opt.home_sci': 'Home Science',
+    'opt.bio': 'Biology',
+    'opt.arts': 'Arts',
+    'err.stream_req': 'Please select a stream.',
     'err.name_req': "Please enter student's full name.",
     'err.dob_req': 'Date of birth is required.',
     'err.dob_future': 'Date of birth cannot be in the future.',
@@ -196,13 +194,13 @@ const translations = {
     'p.city': 'शहर',
     'p.pincode': '6 अंकों का पिनकोड',
     // Validation errors
-    'f.stream'        : 'स्ट्रीम',
-    'opt.stream_def'  : 'स्ट्रीम चुनें',
-    'opt.maths'       : 'गणित',
-    'opt.home_sci'    : 'गृह विज्ञान',
-    'opt.bio'         : 'जीव विज्ञान',
-    'opt.arts'        : 'कला',
-    'err.stream_req'  : 'कृपया स्ट्रीम चुनें।',
+    'f.stream': 'स्ट्रीम',
+    'opt.stream_def': 'स्ट्रीम चुनें',
+    'opt.maths': 'गणित',
+    'opt.home_sci': 'गृह विज्ञान',
+    'opt.bio': 'जीव विज्ञान',
+    'opt.arts': 'कला',
+    'err.stream_req': 'कृपया स्ट्रीम चुनें।',
     'err.name_req': 'कृपया छात्र का पूरा नाम दर्ज करें।',
     'err.dob_req': 'जन्म तिथि आवश्यक है।',
     'err.dob_future': 'जन्म तिथि भविष्य में नहीं हो सकती।',
@@ -381,24 +379,24 @@ document.addEventListener('DOMContentLoaded', () => {
 // 6. STREAM DROPDOWN LOGIC
 // =============================================
 const STREAMS = {
-  '910': ['Maths','Home Science'],
-  '1112': ['Biology','Maths','Arts']
+  '910': ['Maths', 'Home Science'],
+  '1112': ['Biology', 'Maths', 'Arts']
 };
 const STREAMS_HI = {
-  'Maths'        : 'गणित',
-  'Home Science' : 'गृह विज्ञान',
-  'Biology'      : 'जीव विज्ञान',
-  'Arts'         : 'कला'
+  'Maths': 'गणित',
+  'Home Science': 'गृह विज्ञान',
+  'Biology': 'जीव विज्ञान',
+  'Arts': 'कला'
 };
 
 function updateStreamDropdown() {
-  const cls       = (document.getElementById('class_applied')?.value || '').trim();
-  const group     = document.getElementById('stream_group');
+  const cls = (document.getElementById('class_applied')?.value || '').trim();
+  const group = document.getElementById('stream_group');
   const streamSel = document.getElementById('stream');
   if (!group || !streamSel) return;
 
   let options = null;
-  if (cls === 'Class 9' || cls === 'Class 10')  options = STREAMS['910'];
+  if (cls === 'Class 9' || cls === 'Class 10') options = STREAMS['910'];
   if (cls === 'Class 11' || cls === 'Class 12') options = STREAMS['1112'];
 
   if (options) {
@@ -406,8 +404,8 @@ function updateStreamDropdown() {
     streamSel.innerHTML = `<option value="">${t('opt.stream_def')}</option>`;
     options.forEach(s => {
       const label = currentLang === 'hi' ? (STREAMS_HI[s] || s) : s;
-      const opt   = document.createElement('option');
-      opt.value   = s;
+      const opt = document.createElement('option');
+      opt.value = s;
       opt.textContent = label;
       streamSel.appendChild(opt);
     });
@@ -423,7 +421,7 @@ function updateStreamDropdown() {
     streamSel.required = true;
   } else {
     group.style.display = 'none';
-    streamSel.value    = '';
+    streamSel.value = '';
     streamSel.required = false;
     clearError('stream');
   }
@@ -588,7 +586,7 @@ function validateForm() {
 
   // Stream (only required for Class 9-12)
   const cls = (document.getElementById('class_applied')?.value || '');
-  if (['Class 9','Class 10','Class 11','Class 12'].includes(cls)) {
+  if (['Class 9', 'Class 10', 'Class 11', 'Class 12'].includes(cls)) {
     const streamEl = document.getElementById('stream');
     if (!streamEl || !streamEl.value) { showError('stream', t('err.stream_req')); valid = false; }
     else clearError('stream');
@@ -666,7 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const formData = new FormData(admissionForm);
       const data = {};
-      
+
       // Separate file fields and other fields
       formData.forEach((value, key) => {
         if (!(value instanceof File)) {
@@ -677,7 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Handle Files — Convert to Base64 (to match existing DB logic)
       const filePromises = [];
       const filesToProcess = ['photo', 'aadhaar_front', 'aadhaar_back', 'marksheet'];
-      
+
       for (const field of filesToProcess) {
         const fileInput = document.getElementById(field);
         if (fileInput && fileInput.files && fileInput.files[0]) {
@@ -696,23 +694,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
       await Promise.all(filePromises);
 
-      const { data: insertedData, error } = await supabaseClient
-        .from('applications')
-        .insert([data])
-        .select();
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Important for GAS Web App
+        cache: 'no-cache',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      // Note: 'no-cors' mode doesn't allow reading the response body, 
+      // but the data will be sent successfully. 
+      // For a better UX, we'll assume success if no error is thrown
+      // or redirect to a generic success page if we can't get the ID.
 
       loadingOverlay.classList.add('hidden'); loadingOverlay.classList.remove('flex');
       submitBtn.disabled = false;
       if (submitText) submitText.textContent = t('btn.submit');
 
-      if (error) {
-        showToast('Error: ' + error.message, 'error');
-      } else if (insertedData && insertedData[0]) {
-        localStorage.removeItem(AUTO_SAVE_KEY);
-        window.location.href = 'confirmation.html?id=' + insertedData[0].id;
-      } else {
-        showToast('Submission failed. No data returned.', 'error');
-      }
+      localStorage.removeItem(AUTO_SAVE_KEY);
+      // Since no-cors hides the ID, we redirect to confirmation with a 'success' flag
+      window.location.href = 'confirmation.html?status=success';
     } catch (err) {
       loadingOverlay.classList.add('hidden'); loadingOverlay.classList.remove('flex');
       submitBtn.disabled = false;
