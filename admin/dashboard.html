@@ -152,7 +152,8 @@
       return;
     }
     document.getElementById('bodyContent').classList.remove('hidden');
-    document.getElementById('admin_name').textContent = session.user.email.split('@')[0];
+    const name = session.user.email.split('@')[0];
+    document.getElementById('admin_name').textContent = name.charAt(0).toUpperCase() + name.slice(1);
     loadStats();
   }
 
