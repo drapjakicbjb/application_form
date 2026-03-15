@@ -95,6 +95,18 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxdmd3cm9kYWlmbGJ5cGx0amR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODU0NzgsImV4cCI6MjA4OTE2MTQ3OH0.1LuaunIGVMXP6Lp4D9Kw9ye0-Rgeo_SW_ZFKCr2PoUY';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // Helper: Supabase BYTEA (hex string) to Base64
+    function hexToBase64(hex) {
+      if (!hex || typeof hex !== 'string') return hex;
+      if (!hex.startsWith('\\x')) return hex;
+      const cleanHex = hex.slice(2);
+      const bin = [];
+      for (let i = 0; i < cleanHex.length; i += 2) {
+        bin.push(parseInt(cleanHex.substr(i, 2), 16));
+      }
+      return btoa(String.fromCharCode.apply(null, bin));
+    }
+
     async function checkAuth() {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) {
@@ -200,7 +212,7 @@
         </div>
 
         <div class="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-2xl p-6 text-white flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          ${app.photo ? `<img src="data:${app.photo_mime};base64,${app.photo}" class="w-20 h-20 rounded-xl object-contain bg-white/20 border-4 border-white/30 shadow-lg flex-shrink-0" />` : `<div class="w-20 h-20 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-user text-white text-3xl"></i></div>`}
+          ${app.photo ? `<img src="data:${app.photo_mime};base64,${hexToBase64(app.photo)}" class="w-20 h-20 rounded-xl object-contain bg-white/20 border-4 border-white/30 shadow-lg flex-shrink-0" />` : `<div class="w-20 h-20 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-user text-white text-3xl"></i></div>`}
           <div>
             <h1 class="text-2xl font-bold">${app.student_name}</h1>
             <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 opacity-90 text-sm">
@@ -260,7 +272,8 @@
       
       let inner = '';
       if (content) {
-        if (isImg) inner = `<img src="data:${mime};base64,${content}" class="w-full h-24 object-contain rounded-lg bg-white shadow-sm" />`;
+        const b64 = hexToBase64(content);
+        if (isImg) inner = `<img src="data:${mime};base64,${b64}" class="w-full h-24 object-contain rounded-lg bg-white shadow-sm" />`;
         else inner = `<div class="w-full h-24 flex items-center justify-center bg-white rounded-lg shadow-sm"><i class="fa-solid fa-file-pdf text-3xl text-red-500"></i></div>`;
       } else {
         inner = `<div class="w-full h-24 flex items-center justify-center bg-slate-100/50 rounded-lg border-2 border-dashed border-slate-200"><i class="fa-solid ${icon} text-2xl text-slate-300"></i></div>`;
@@ -270,7 +283,7 @@
         <div class="border border-slate-100 rounded-xl p-3 flex flex-col items-center gap-2 bg-slate-50 hover:bg-white transition group relative overflow-hidden">
           ${inner}
           <span class="text-[10px] font-bold text-slate-500 text-center uppercase tracking-tighter">${label}</span>
-          ${content ? `<a href="data:${mime};base64,${content}" download="${label}" class="absolute inset-0 bg-indigo-600/90 text-white flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"><i class="fa-solid fa-download mb-1"></i><span class="text-[10px] font-bold">DOWNLOAD</span></a>` : ''}
+          ${content ? `<a href="data:${mime};base64,${hexToBase64(content)}" download="${label}" class="absolute inset-0 bg-indigo-600/90 text-white flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity rounded-xl"><i class="fa-solid fa-download mb-1"></i><span class="text-[10px] font-bold">DOWNLOAD</span></a>` : ''}
         </div>
       `;
     }

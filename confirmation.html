@@ -248,6 +248,20 @@
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxdmd3cm9kYWlmbGJ5cGx0amR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODU0NzgsImV4cCI6MjA4OTE2MTQ3OH0.1LuaunIGVMXP6Lp4D9Kw9ye0-Rgeo_SW_ZFKCr2PoUY';
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+    // Helper: Supabase BYTEA (hex string) to Base64
+    function hexToBase64(hex) {
+      if (!hex || typeof hex !== 'string') return hex;
+      // If it's already base64 (doesn't start with \x), return as is
+      if (!hex.startsWith('\\x')) return hex;
+      
+      const cleanHex = hex.slice(2); // remove \x
+      const bin = [];
+      for (let i = 0; i < cleanHex.length; i += 2) {
+        bin.push(parseInt(cleanHex.substr(i, 2), 16));
+      }
+      return btoa(String.fromCharCode.apply(null, bin));
+    }
+
     async function loadApplication() {
       const urlParams = new URLSearchParams(window.location.search);
       const id = urlParams.get('id');
@@ -297,7 +311,8 @@
         // Handle Photo
         const photoBox = document.getElementById('photo_container');
         if (app.photo) {
-          photoBox.innerHTML = `<img src="data:${app.photo_mime};base64,${app.photo}" alt="Student Photo">`;
+          const b64 = hexToBase64(app.photo);
+          photoBox.innerHTML = `<img src="data:${app.photo_mime};base64,${b64}" alt="Student Photo">`;
         } else {
           photoBox.innerHTML = `<i class="fa-solid fa-user-graduate"></i>`;
         }
@@ -318,8 +333,9 @@
           
           let html = '';
           if (hasFile) {
+            const b64 = hexToBase64(content);
             if (mime && mime.startsWith('image/')) {
-              html = `<img src="data:${mime};base64,${content}" alt="${d.label}" class="doc-img" />`;
+              html = `<img src="data:${mime};base64,${b64}" alt="${d.label}" class="doc-img" />`;
             } else {
               html = `<div class="doc-icon-placeholder"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i></div>
                       <div style="font-size: 10px; color: #64748b;">PDF Document</div>`;
