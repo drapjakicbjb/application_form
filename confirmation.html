@@ -1,35 +1,3 @@
-<?php
-/**
- * confirmation.php — Student Confirmation Page (Supabase API Version)
- */
-
-require_once 'db.php';
-
-$id = (int)($_GET['id'] ?? 0);
-
-if ($id <= 0) {
-    header('Location: index.html');
-    exit;
-}
-
-// Fetch application data via Supabase API
-$response = supabaseRequest("applications?id=eq.{$id}");
-
-if (isset($response['error']) || empty($response)) {
-    die("Application not found.");
-}
-
-$app = $response[0];
-
-// Helper to generate image/file URLs
-function uploadUrl(int $id, string $field): string {
-    return 'file_proxy.php?id=' . $id . '&field=' . $field;
-}
-
-$photoUrl  = !empty($app['photo']) ? uploadUrl($app['id'], 'photo') : '';
-$submittedDate = date('d F Y', strtotime($app['created_at']));
-$submittedTime = date('h:i A', strtotime($app['created_at']));
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,6 +6,7 @@ $submittedTime = date('h:i A', strtotime($app['created_at']));
   <title>Application Submitted - Dr. A.P.J. Abdul Kalam Inter College</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --primary: #4f46e5;
@@ -55,6 +24,7 @@ $submittedTime = date('h:i A', strtotime($app['created_at']));
     .confirm-container {
       max-width: 900px; margin: 0 auto; background: white;
       border-radius: 24px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+      display: none; /* Hidden until data loaded */
     }
 
     .hero-banner {
@@ -64,7 +34,7 @@ $submittedTime = date('h:i A', strtotime($app['created_at']));
 
     .success-badge {
       width: 70px; height: 70px; background: white; color: var(--success);
-      border-radius: 50%; display: flex; items-center; justify-content: center;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
       margin: 0 auto 15px; font-size: 32px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
 
@@ -127,7 +97,7 @@ $submittedTime = date('h:i A', strtotime($app['created_at']));
 
     .btn {
       padding: 12px 24px; border-radius: 10px; font-size: 15px;
-      font-weight: 600; cursor: pointer; display: inline-flex; items-center; gap: 10px;
+      font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 10px;
       text-decoration: none; transition: 0.2s; border: none;
     }
     .btn-print { background: var(--primary); color: white; }
@@ -135,10 +105,18 @@ $submittedTime = date('h:i A', strtotime($app['created_at']));
     .btn-home { background: #fff; color: #475569; border: 1px solid #e2e8f0; }
     .btn-home:hover { background: #f1f5f9; }
 
+    #loading { text-align: center; padding: 100px 0; }
+    .loader {
+      border: 4px solid #f3f3f3; border-top: 4px solid var(--primary);
+      border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     @media print {
       body { background: white; padding: 0; }
-      .confirm-container { box-shadow: none; border: none; max-width: 100%; width: 100%; }
-      .actions-bar, .success-badge, .hero-banner p { display: none; }
+      .confirm-container { box-shadow: none; border: none; max-width: 100%; width: 100%; display: block !important; }
+      .actions-bar, .success-badge, .hero-banner p, #loading { display: none; }
       .hero-banner { background: #fff !important; color: #000 !important; padding: 20px; border-bottom: 2px solid #eee; }
       .hero-banner h1 { font-size: 24px; text-align: left; }
       .content-layout { display: block; padding: 20px; }
@@ -154,28 +132,29 @@ $submittedTime = date('h:i A', strtotime($app['created_at']));
 </head>
 <body>
 
-  <div class="confirm-container">
+  <div id="loading">
+    <div class="loader"></div>
+    <p>Loading application details...</p>
+  </div>
+
+  <div class="confirm-container" id="mainContainer">
     <div class="hero-banner">
       <div class="success-badge"><i class="fa-solid fa-check"></i></div>
       <h1>Submissions Received!</h1>
-      <p>Thank you, <?= htmlspecialchars($app['student_name']) ?>. Your application has been successfully logged.</p>
+      <p>Thank you, <span id="hero_name"></span>. Your application has been successfully logged.</p>
     </div>
 
     <div class="content-layout">
       <!-- SIDEBAR WITH PHOTO -->
       <div class="student-sidebar">
-        <div class="photo-box">
-          <?php if ($photoUrl): ?>
-            <img src="<?= $photoUrl ?>" alt="Student Photo">
-          <?php else: ?>
-            <i class="fa-solid fa-user-graduate"></i>
-          <?php endif; ?>
+        <div class="photo-box" id="photo_container">
+          <!-- Photo injected here -->
         </div>
         <div class="field-label">Application ID</div>
-        <div class="reg-id"><?= sprintf('#%06d', $app['id']) ?></div>
+        <div class="reg-id" id="display_id"></div>
         <p style="font-size: 13px; color: #64748b; margin-top: 15px;">
           <i class="fa-regular fa-calendar-check" style="margin-right: 5px;"></i> Submitted on:<br>
-          <strong><?= $submittedDate ?></strong> at <?= $submittedTime ?>
+          <strong id="submit_date"></strong> at <span id="submit_time"></span>
         </p>
       </div>
 
@@ -187,32 +166,28 @@ $submittedTime = date('h:i A', strtotime($app['created_at']));
           <div class="info-grid">
             <div>
               <p class="field-label">Full Name</p>
-              <p class="field-value"><?= htmlspecialchars($app['student_name']) ?></p>
+              <p class="field-value" id="val_student_name"></p>
             </div>
             <div>
               <p class="field-label">Date of Birth</p>
-              <p class="field-value"><?= date('d M Y', strtotime($app['dob'])) ?></p>
+              <p class="field-value" id="val_dob"></p>
             </div>
             <div>
               <p class="field-label">Gender</p>
-              <p class="field-value"><?= htmlspecialchars($app['gender']) ?></p>
+              <p class="field-value" id="val_gender"></p>
             </div>
             <div>
               <p class="field-label">Class Applied</p>
-              <p class="field-value"><?= htmlspecialchars($app['class_applied']) ?></p>
+              <p class="field-value" id="val_class_applied"></p>
             </div>
-            <?php if (!empty($app['stream'])): ?>
-            <div>
+            <div id="stream_box" style="display:none">
               <p class="field-label">Stream</p>
-              <p class="field-value"><?= htmlspecialchars($app['stream']) ?></p>
+              <p class="field-value" id="val_stream"></p>
             </div>
-            <?php endif; ?>
-            <?php if ($app['previous_school']): ?>
-            <div>
+            <div id="prev_school_box">
               <p class="field-label">Previous School</p>
-              <p class="field-value"><?= htmlspecialchars($app['previous_school']) ?></p>
+              <p class="field-value" id="val_previous_school"></p>
             </div>
-            <?php endif; ?>
           </div>
         </div>
 
@@ -221,56 +196,31 @@ $submittedTime = date('h:i A', strtotime($app['created_at']));
           <div class="info-grid">
             <div>
               <p class="field-label">Father's Name</p>
-              <p class="field-value"><?= htmlspecialchars($app['father_name']) ?></p>
+              <p class="field-value" id="val_father_name"></p>
             </div>
             <div>
               <p class="field-label">Mother's Name</p>
-              <p class="field-value"><?= htmlspecialchars($app['mother_name']) ?></p>
+              <p class="field-value" id="val_mother_name"></p>
             </div>
             <div>
               <p class="field-label">Phone Number</p>
-              <p class="field-value"><?= htmlspecialchars($app['phone']) ?></p>
+              <p class="field-value" id="val_phone"></p>
             </div>
             <div>
               <p class="field-label">Email Address</p>
-              <p class="field-value"><?= htmlspecialchars($app['email']) ?></p>
+              <p class="field-value" id="val_email"></p>
             </div>
             <div style="grid-column: 1 / -1;">
               <p class="field-label">Full Address</p>
-              <p class="field-value"><?= htmlspecialchars($app['address']) ?>, <?= htmlspecialchars($app['city']) ?>, <?= htmlspecialchars($app['state']) ?> - <?= htmlspecialchars($app['pincode']) ?></p>
+              <p class="field-value" id="val_full_address"></p>
             </div>
           </div>
         </div>
 
         <div class="info-section">
           <h3 class="section-title"><i class="fa-solid fa-file-shield"></i> Identity & Documents</h3>
-          <div class="docs-list">
-            <?php 
-            $docs = [
-              'photo'         => ['Student Photo',        'fa-user', true],
-              'aadhaar_front' => ['Aadhaar Front',       'fa-id-card', true],
-              'aadhaar_back'  => ['Aadhaar Back',        'fa-id-card', true],
-              'marksheet'     => ['Previous Marksheet',   'fa-file-invoice', false],
-            ];
-            foreach ($docs as $field => [$label, $icon, $isImg]):
-              $hasFile = !empty($app[$field]);
-              $url = $hasFile ? uploadUrl($app['id'], $field) : null;
-              $mime = $app[$field . '_mime'] ?? '';
-              $isImage = strpos($mime, 'image/') === 0;
-            ?>
-            <div class="doc-item">
-              <?php if ($url && $isImage): ?>
-                <img src="<?= $url ?>" alt="<?= $label ?>" class="doc-img" loading="eager" />
-              <?php elseif ($url): ?>
-                <div class="doc-icon-placeholder"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i></div>
-                <div style="font-size: 10px; color: #64748b;">PDF Document</div>
-              <?php else: ?>
-                <div class="doc-icon-placeholder text-gray-200"><i class="fa-solid <?= $icon ?>"></i></div>
-                <div style="font-size: 10px; color: #94a3b8;">Not Uploaded</div>
-              <?php endif; ?>
-              <div class="doc-name"><?= $label ?></div>
-            </div>
-            <?php endforeach; ?>
+          <div class="docs-list" id="docsContainer">
+            <!-- Documents injected here -->
           </div>
         </div>
 
@@ -290,8 +240,112 @@ $submittedTime = date('h:i A', strtotime($app['created_at']));
   </div>
 
   <footer style="text-align: center; margin-top: 30px; color: #94a3b8; font-size: 13px;">
-    &copy; <?= date('Y') ?> Dr. A.P.J. Abdul Kalam Inter College. All rights reserved.
+    &copy; 2026 Dr. A.P.J. Abdul Kalam Inter College. All rights reserved.
   </footer>
 
+  <script>
+    const SUPABASE_URL = 'https://jqvgwrodaiflbypltjdy.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxdmd3cm9kYWlmbGJ5cGx0amR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODU0NzgsImV4cCI6MjA4OTE2MTQ3OH0.1LuaunIGVMXP6Lp4D9Kw9ye0-Rgeo_SW_ZFKCr2PoUY';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function loadApplication() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+
+      if (!id) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      try {
+        const { data: apps, error } = await supabaseClient
+          .from('applications')
+          .select('*')
+          .eq('id', id);
+
+        if (error || !apps || apps.length === 0) {
+          document.getElementById('loading').innerHTML = '<p class="text-red-500">Application not found.</p>';
+          return;
+        }
+
+        const app = apps[0];
+        
+        // Fill Text Info
+        document.getElementById('hero_name').textContent = app.student_name;
+        document.getElementById('val_student_name').textContent = app.student_name;
+        document.getElementById('val_dob').textContent = new Date(app.dob).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        document.getElementById('val_gender').textContent = app.gender;
+        document.getElementById('val_class_applied').textContent = app.class_applied;
+        
+        if (app.stream) {
+          document.getElementById('stream_box').style.display = 'block';
+          document.getElementById('val_stream').textContent = app.stream;
+        }
+        
+        document.getElementById('val_previous_school').textContent = app.previous_school || 'N/A';
+        document.getElementById('val_father_name').textContent = app.father_name;
+        document.getElementById('val_mother_name').textContent = app.mother_name;
+        document.getElementById('val_phone').textContent = app.phone;
+        document.getElementById('val_email').textContent = app.email;
+        document.getElementById('val_full_address').textContent = `${app.address}, ${app.city}, ${app.state} - ${app.pincode}`;
+        
+        document.getElementById('display_id').textContent = '#' + String(app.id).padStart(6, '0');
+        const createdAt = new Date(app.created_at);
+        document.getElementById('submit_date').textContent = createdAt.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+        document.getElementById('submit_time').textContent = createdAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+        // Handle Photo
+        const photoBox = document.getElementById('photo_container');
+        if (app.photo) {
+          photoBox.innerHTML = `<img src="data:${app.photo_mime};base64,${app.photo}" alt="Student Photo">`;
+        } else {
+          photoBox.innerHTML = `<i class="fa-solid fa-user-graduate"></i>`;
+        }
+
+        // Handle Documents
+        const docsContainer = document.getElementById('docsContainer');
+        const docs = [
+          { field: 'photo', label: 'Student Photo', icon: 'fa-user' },
+          { field: 'aadhaar_front', label: 'Aadhaar Front', icon: 'fa-id-card' },
+          { field: 'aadhaar_back', label: 'Aadhaar Back', icon: 'fa-id-card' },
+          { field: 'marksheet', label: 'Previous Marksheet', icon: 'fa-file-invoice' }
+        ];
+
+        docs.forEach(d => {
+          const content = app[d.field];
+          const mime = app[d.field + '_mime'];
+          const hasFile = !!content;
+          
+          let html = '';
+          if (hasFile) {
+            if (mime && mime.startsWith('image/')) {
+              html = `<img src="data:${mime};base64,${content}" alt="${d.label}" class="doc-img" />`;
+            } else {
+              html = `<div class="doc-icon-placeholder"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i></div>
+                      <div style="font-size: 10px; color: #64748b;">PDF Document</div>`;
+            }
+          } else {
+            html = `<div class="doc-icon-placeholder"><i class="fa-solid ${d.icon}" style="color:#cbd5e1;"></i></div>
+                    <div style="font-size: 10px; color: #94a3b8;">Not Uploaded</div>`;
+          }
+
+          const div = document.createElement('div');
+          div.className = 'doc-item';
+          div.innerHTML = `${html}<div class="doc-name">${d.label}</div>`;
+          docsContainer.appendChild(div);
+        });
+
+        // Show Content
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('mainContainer').style.display = 'block';
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById('loading').innerHTML = '<p class="text-red-500">Error loading data.</p>';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadApplication);
+  </script>
 </body>
 </html>

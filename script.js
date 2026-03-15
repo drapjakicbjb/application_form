@@ -5,6 +5,13 @@
  */
 
 // =============================================
+// 0. SUPABASE CONFIGURATION
+// =============================================
+const SUPABASE_URL = 'https://jqvgwrodaiflbypltjdy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impxdmd3cm9kYWlmbGJ5cGx0amR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1ODU0NzgsImV4cCI6MjA4OTE2MTQ3OH0.1LuaunIGVMXP6Lp4D9Kw9ye0-Rgeo_SW_ZFKCr2PoUY';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// =============================================
 // 1. TRANSLATIONS (English + Hindi)
 // =============================================
 const translations = {
@@ -657,24 +664,60 @@ document.addEventListener('DOMContentLoaded', () => {
     if (submitText) submitText.textContent = currentLang === 'hi' ? 'जमा हो रहा है…' : 'Submitting…';
 
     try {
-      const res = await fetch('submit.php', { method: 'POST', body: new FormData(admissionForm) });
-      const data = await res.json();
+      const formData = new FormData(admissionForm);
+      const data = {};
+      
+      // Separate file fields and other fields
+      formData.forEach((value, key) => {
+        if (!(value instanceof File)) {
+          data[key] = value;
+        }
+      });
+
+      // Handle Files — Convert to Base64 (to match existing DB logic)
+      const filePromises = [];
+      const filesToProcess = ['photo', 'aadhaar_front', 'aadhaar_back', 'marksheet'];
+      
+      for (const field of filesToProcess) {
+        const fileInput = document.getElementById(field);
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+          filePromises.push(new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              data[field] = e.target.result.split(',')[1];
+              data[field + '_mime'] = file.type;
+              resolve();
+            };
+            reader.readAsDataURL(file);
+          }));
+        }
+      }
+
+      await Promise.all(filePromises);
+
+      const { data: insertedData, error } = await supabaseClient
+        .from('applications')
+        .insert([data])
+        .select();
+
       loadingOverlay.classList.add('hidden'); loadingOverlay.classList.remove('flex');
       submitBtn.disabled = false;
       if (submitText) submitText.textContent = t('btn.submit');
 
-      if (data.success) {
+      if (error) {
+        showToast('Error: ' + error.message, 'error');
+      } else if (insertedData && insertedData[0]) {
         localStorage.removeItem(AUTO_SAVE_KEY);
-        // Redirect to confirmation / review page
-        window.location.href = 'confirmation.php?id=' + (data.id || 0);
+        window.location.href = 'confirmation.html?id=' + insertedData[0].id;
       } else {
-        showToast('Error: ' + (data.message || 'Submission failed.'), 'error');
+        showToast('Submission failed. No data returned.', 'error');
       }
-    } catch {
+    } catch (err) {
       loadingOverlay.classList.add('hidden'); loadingOverlay.classList.remove('flex');
       submitBtn.disabled = false;
       if (submitText) submitText.textContent = t('btn.submit');
-      showToast('Network error. Please check your connection.', 'error');
+      showToast('Error: ' + err.message, 'error');
     }
   });
 });
