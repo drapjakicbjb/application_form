@@ -1,0 +1,8 @@
+# Deny direct access to uploaded files
+# Files are served only through the admin panel
+
+Options -Indexes
+<FilesMatch "\.(php|php3|php4|php5|phtml)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>

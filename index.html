@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Admission Form | School Admission System</title>
+  <meta name="description"
+    content="Apply for school admission online. Fill in student details, contact information, and upload required documents." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: { extend: { fontFamily: { inter: ['Inter', 'Noto Sans Devanagari', 'sans-serif'] } } }
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+    }
+
+    /* Language Modal */
+    #langModal {
+      font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+    }
+
+    .lang-card {
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lang-card:hover {
+      transform: translateY(-6px) scale(1.02);
+    }
+
+    .lang-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .lang-card:hover::before {
+      opacity: 1;
+    }
+
+    .lang-card.selected {
+      box-shadow: 0 0 0 4px white;
+      transform: scale(1.04);
+    }
+  </style>
+</head>
+
+<body
+  class="font-inter min-h-screen transition-colors duration-300 bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+
+  <!-- =====================================================
+     LANGUAGE SELECTOR MODAL
+     ===================================================== -->
+  <div id="langModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+    style="background: linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 70%,#1e1b4b 100%);">
+
+    <!-- Particle dots (CSS only) -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute w-64 h-64 rounded-full bg-indigo-500/10 top-1/4 left-1/4 blur-3xl animate-pulse"></div>
+      <div class="absolute w-80 h-80 rounded-full bg-purple-500/10 bottom-1/4 right-1/4 blur-3xl animate-pulse"
+        style="animation-delay:1s"></div>
+    </div>
+
+    <div class="relative z-10 text-center max-w-2xl w-full">
+      <!-- School logo / icon -->
+      <div class="w-24 h-24 mx-auto mb-6 drop-shadow-2xl">
+        <img src="uploads/assets/img/dr logo500.png" alt="School Logo" class="w-full h-full object-contain" />
+      </div>
+
+      <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-1">School Admission Portal</h1>
+      <p class="text-indigo-300 text-sm mb-2">स्कूल प्रवेश पोर्टल</p>
+      <p class="text-indigo-200 text-base mb-10 font-medium">Please select your preferred language &nbsp;|&nbsp; कृपया
+        अपनी भाषा चुनें</p>
+
+      <!-- Language Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-lg mx-auto">
+
+        <!-- English -->
+        <button class="lang-card rounded-3xl p-7 border-2 border-white/20
+                     bg-white/10 backdrop-blur-md hover:border-white/60
+                     flex flex-col items-center gap-3 text-white shadow-xl" onclick="selectLanguage('en')"
+          id="card_en">
+          <div
+            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center shadow-lg text-2xl font-bold">
+            🇬🇧
+          </div>
+          <div>
+            <p class="text-xl font-bold">English</p>
+            <p class="text-indigo-300 text-xs mt-0.5">Continue in English</p>
+          </div>
+          <div class="mt-1 flex items-center gap-2 text-xs text-indigo-300">
+            <i class="fa-solid fa-arrow-right"></i> Select
+          </div>
+        </button>
+
+        <!-- Hindi -->
+        <button class="lang-card rounded-3xl p-7 border-2 border-white/20
+                     bg-white/10 backdrop-blur-md hover:border-white/60
+                     flex flex-col items-center gap-3 text-white shadow-xl" onclick="selectLanguage('hi')"
+          id="card_hi">
+          <div
+            class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-rose-600 flex items-center justify-center shadow-lg text-2xl font-bold">
+            🇮🇳
+          </div>
+          <div>
+            <p class="text-xl font-bold">हिंदी</p>
+            <p class="text-orange-300 text-xs mt-0.5">हिंदी में जारी रखें</p>
+          </div>
+          <div class="mt-1 flex items-center gap-2 text-xs text-orange-300">
+            <i class="fa-solid fa-arrow-right"></i> चुनें
+          </div>
+        </button>
+
+      </div>
+
+      <p class="text-indigo-500 text-xs mt-10">&copy; 2026 School Admission Portal</p>
+    </div>
+  </div><!-- /langModal -->
+
+
+  <!-- =====================================================
+     MAIN CONTENT (hidden until language chosen)
+     ===================================================== -->
+  <div id="mainContent" class="hidden">
+
+    <!-- HEADER -->
+    <header
+      class="relative z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-white/30 dark:border-gray-700/50">
+      <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 drop-shadow-lg">
+            <img src="uploads/assets/img/dr logo500.png" alt="School Logo" class="w-full h-full object-contain" />
+          </div>
+          <div>
+            <h1 class="text-lg font-bold text-gray-800 dark:text-white leading-tight" data-i18n="header.title">School
+              Admission Portal</h1>
+            <p class="text-xs text-indigo-500 dark:text-indigo-400 font-medium" data-i18n="header.year">Academic Year
+              2026–26</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <!-- Language switcher -->
+          <button id="langSwitchBtn" onclick="showLangModal()"
+            class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-300/60 dark:border-indigo-600/60 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all">
+            <i class="fa-solid fa-language"></i>
+            <span id="currentLangLabel">EN</span>
+          </button>
+          <a href="admin/login.php"
+            class="hidden sm:flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+            <i class="fa-solid fa-user-shield"></i>
+            <span data-i18n="header.admin">Admin</span>
+          </a>
+          <button id="darkToggle" aria-label="Toggle dark mode"
+            class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-indigo-100 dark:hover:bg-indigo-900 text-gray-600 dark:text-gray-200 transition-all flex items-center justify-center">
+            <i class="fa-solid fa-moon dark:hidden"></i>
+            <i class="fa-solid fa-sun hidden dark:block text-yellow-400"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO BANNER -->
+    <section class="text-center py-10 px-4">
+      <div
+        class="inline-block bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-4 tracking-wide uppercase">
+        <i class="fa-solid fa-circle-check mr-1"></i>
+        <span data-i18n="hero.badge">Admissions Open</span>
+      </div>
+      <h2 class="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-white mb-3" data-i18n="hero.title">Apply
+        for Admission</h2>
+      <p class="text-gray-500 dark:text-gray-400 text-lg max-w-xl mx-auto">
+        <span data-i18n="hero.subtitle">Fill out the form below carefully. All fields marked</span>
+        <span class="text-red-500 font-semibold"> *</span>
+        <span data-i18n="hero.mandatory">are mandatory.</span>
+      </p>
+    </section>
+
+    <!-- PROGRESS BAR -->
+    <div class="max-w-4xl mx-auto px-4 mb-6">
+      <div class="glass-card rounded-2xl p-4">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-sm font-semibold text-gray-700 dark:text-gray-300" data-i18n="progress.label">Application
+            Progress</span>
+          <span id="progressText" class="text-sm font-bold text-indigo-600 dark:text-indigo-400">0%</span>
+        </div>
+        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+          <div id="progressBar"
+            class="bg-gradient-to-r from-indigo-500 to-purple-500 h-2.5 rounded-full transition-all duration-500"
+            style="width:0%"></div>
+        </div>
+        <!-- Step Indicators -->
+        <div class="flex justify-between mt-4 text-xs font-medium">
+          <div class="step-item flex flex-col items-center gap-1" data-step="1">
+            <div
+              class="step-circle w-8 h-8 rounded-full border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center transition-all">
+              <i class="fa-solid fa-user text-gray-400"></i>
+            </div>
+            <span class="text-gray-500 dark:text-gray-400 hidden sm:block" data-i18n="step.student">Student</span>
+          </div>
+          <div class="step-item flex flex-col items-center gap-1" data-step="2">
+            <div
+              class="step-circle w-8 h-8 rounded-full border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center transition-all">
+              <i class="fa-solid fa-address-book text-gray-400"></i>
+            </div>
+            <span class="text-gray-500 dark:text-gray-400 hidden sm:block" data-i18n="step.contact">Contact</span>
+          </div>
+          <div class="step-item flex flex-col items-center gap-1" data-step="3">
+            <div
+              class="step-circle w-8 h-8 rounded-full border-2 border-gray-300 dark:border-gray-600 flex items-center justify-center transition-all">
+              <i class="fa-solid fa-file-arrow-up text-gray-400"></i>
+            </div>
+            <span class="text-gray-500 dark:text-gray-400 hidden sm:block" data-i18n="step.documents">Documents</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN FORM -->
+    <main class="max-w-4xl mx-auto px-4 pb-16">
+      <form id="admissionForm" action="submit.php" method="POST" enctype="multipart/form-data" novalidate>
+
+        <!-- ===== SECTION 1: STUDENT DETAILS ===== -->
+        <div class="form-section glass-card rounded-3xl p-6 md:p-8 mb-6 section-animate" data-section="1">
+          <div class="section-header flex items-center gap-3 mb-6">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+              <i class="fa-solid fa-user text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white" data-i18n="s1.title">Student Details</h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400" data-i18n="s1.sub">Basic information about the student
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <!-- Full Name -->
+            <div class="form-group md:col-span-2">
+              <label class="form-label" for="student_name"><span data-i18n="f.student_name">Full Name</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-user input-icon"></i>
+                <input type="text" id="student_name" name="student_name" class="form-input"
+                  data-i18n-placeholder="p.student_name" placeholder="Enter student's full name" autocomplete="name"
+                  required />
+              </div>
+              <span class="error-msg" id="err_student_name"></span>
+            </div>
+
+            <!-- Date of Birth -->
+            <div class="form-group">
+              <label class="form-label" for="dob"><span data-i18n="f.dob">Date of Birth</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-calendar-days input-icon"></i>
+                <input type="date" id="dob" name="dob" class="form-input" required />
+              </div>
+              <span class="error-msg" id="err_dob"></span>
+            </div>
+
+            <!-- Gender -->
+            <div class="form-group">
+              <label class="form-label" for="gender"><span data-i18n="f.gender">Gender</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-venus-mars input-icon"></i>
+                <select id="gender" name="gender" class="form-input form-select" required>
+                  <option value="" data-i18n="opt.gender_def">Select Gender</option>
+                  <option value="Male" data-i18n="opt.male">Male</option>
+                  <option value="Female" data-i18n="opt.female">Female</option>
+                  <option value="Other" data-i18n="opt.other">Other</option>
+                </select>
+              </div>
+              <span class="error-msg" id="err_gender"></span>
+            </div>
+
+            <!-- Blood Group -->
+            <div class="form-group">
+              <label class="form-label" for="blood_group"><span data-i18n="f.blood_group">Blood Group</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-droplet input-icon"></i>
+                <select id="blood_group" name="blood_group" class="form-input form-select">
+                  <option value="" data-i18n="opt.blood_def">Select Blood Group</option>
+                  <option>A+</option>
+                  <option>A-</option>
+                  <option>B+</option>
+                  <option>B-</option>
+                  <option>O+</option>
+                  <option>O-</option>
+                  <option>AB+</option>
+                  <option>AB-</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Aadhaar Number -->
+            <div class="form-group">
+              <label class="form-label" for="aadhaar"><span data-i18n="f.aadhaar">Aadhaar Number</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-id-card input-icon"></i>
+                <input type="text" id="aadhaar" name="aadhaar" class="form-input" data-i18n-placeholder="p.aadhaar"
+                  placeholder="12-digit Aadhaar number" maxlength="12" pattern="\d{12}" required />
+              </div>
+              <span class="error-msg" id="err_aadhaar"></span>
+            </div>
+
+            <!-- Class Applying For -->
+            <div class="form-group">
+              <label class="form-label" for="class_applied"><span data-i18n="f.class_applied">Class Applying For</span>
+                <span class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-school input-icon"></i>
+                <select id="class_applied" name="class_applied" class="form-input form-select" required>
+                  <option value="" data-i18n="opt.class_def">Select Class</option>
+                  <option>Nursery</option>
+                  <option>LKG</option>
+                  <option>UKG</option>
+                  <option>Class 1</option>
+                  <option>Class 2</option>
+                  <option>Class 3</option>
+                  <option>Class 4</option>
+                  <option>Class 5</option>
+                  <option>Class 6</option>
+                  <option>Class 7</option>
+                  <option>Class 8</option>
+                  <option>Class 9</option>
+                  <option>Class 10</option>
+                  <option>Class 11</option>
+                  <option>Class 12</option>
+                </select>
+              </div>
+              <span class="error-msg" id="err_class_applied"></span>
+            </div>
+
+            <!-- Stream (shown for Class 9-12 only) -->
+            <div class="form-group" id="stream_group" style="display:none; transition: all 0.3s ease;">
+              <label class="form-label" for="stream">
+                <span data-i18n="f.stream">Stream</span> <span class="text-red-500">*</span>
+              </label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-flask input-icon"></i>
+                <select id="stream" name="stream" class="form-input form-select">
+                  <option value="" data-i18n="opt.stream_def">Select Stream</option>
+                </select>
+              </div>
+              <span class="error-msg" id="err_stream"></span>
+            </div>
+
+            <!-- Previous School -->
+            <div class="form-group md:col-span-2">
+              <label class="form-label" for="previous_school"><span data-i18n="f.previous_school">Previous
+                  School</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-building-columns input-icon"></i>
+                <input type="text" id="previous_school" name="previous_school" class="form-input"
+                  data-i18n-placeholder="p.previous_school" placeholder="Name of previous school (if any)" />
+              </div>
+            </div>
+
+          </div>
+        </div><!-- /section 1 -->
+
+        <!-- ===== SECTION 2: CONTACT DETAILS ===== -->
+        <div class="form-section glass-card rounded-3xl p-6 md:p-8 mb-6 section-animate" data-section="2">
+          <div class="section-header flex items-center gap-3 mb-6">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+              <i class="fa-solid fa-address-book text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white" data-i18n="s2.title">Contact Details</h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400" data-i18n="s2.sub">Parent / Guardian information</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <div class="form-group">
+              <label class="form-label" for="father_name"><span data-i18n="f.father_name">Father's Name</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-person input-icon"></i>
+                <input type="text" id="father_name" name="father_name" class="form-input"
+                  data-i18n-placeholder="p.father_name" placeholder="Father's full name" required />
+              </div>
+              <span class="error-msg" id="err_father_name"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="mother_name"><span data-i18n="f.mother_name">Mother's Name</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-person-dress input-icon"></i>
+                <input type="text" id="mother_name" name="mother_name" class="form-input"
+                  data-i18n-placeholder="p.mother_name" placeholder="Mother's full name" required />
+              </div>
+              <span class="error-msg" id="err_mother_name"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="phone"><span data-i18n="f.phone">Phone Number</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-phone input-icon"></i>
+                <input type="tel" id="phone" name="phone" class="form-input" data-i18n-placeholder="p.phone"
+                  placeholder="10-digit mobile number" maxlength="10" required />
+              </div>
+              <span class="error-msg" id="err_phone"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="email"><span data-i18n="f.email">Email Address</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-envelope input-icon"></i>
+                <input type="email" id="email" name="email" class="form-input" placeholder="parent@example.com"
+                  required />
+              </div>
+              <span class="error-msg" id="err_email"></span>
+            </div>
+
+            <div class="form-group md:col-span-2">
+              <label class="form-label" for="address"><span data-i18n="f.address">Full Address</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-map-marker-alt input-icon" style="top:14px"></i>
+                <textarea id="address" name="address" class="form-input pt-3 pl-11" rows="3"
+                  data-i18n-placeholder="p.address" placeholder="House No., Street, Locality..." required></textarea>
+              </div>
+              <span class="error-msg" id="err_address"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="city"><span data-i18n="f.city">City</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-city input-icon"></i>
+                <input type="text" id="city" name="city" class="form-input" data-i18n-placeholder="p.city"
+                  placeholder="City" required />
+              </div>
+              <span class="error-msg" id="err_city"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="state"><span data-i18n="f.state">State</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-map input-icon"></i>
+                <select id="state" name="state" class="form-input form-select" required>
+                  <option value="" data-i18n="opt.state_def">Select State</option>
+                  <option>Andhra Pradesh</option>
+                  <option>Arunachal Pradesh</option>
+                  <option>Assam</option>
+                  <option>Bihar</option>
+                  <option>Chhattisgarh</option>
+                  <option>Goa</option>
+                  <option>Gujarat</option>
+                  <option>Haryana</option>
+                  <option>Himachal Pradesh</option>
+                  <option>Jharkhand</option>
+                  <option>Karnataka</option>
+                  <option>Kerala</option>
+                  <option>Madhya Pradesh</option>
+                  <option>Maharashtra</option>
+                  <option>Manipur</option>
+                  <option>Meghalaya</option>
+                  <option>Mizoram</option>
+                  <option>Nagaland</option>
+                  <option>Odisha</option>
+                  <option>Punjab</option>
+                  <option>Rajasthan</option>
+                  <option>Sikkim</option>
+                  <option>Tamil Nadu</option>
+                  <option>Telangana</option>
+                  <option>Tripura</option>
+                  <option>Uttar Pradesh</option>
+                  <option>Uttarakhand</option>
+                  <option>West Bengal</option>
+                  <option>Delhi</option>
+                  <option>Jammu &amp; Kashmir</option>
+                  <option>Ladakh</option>
+                  <option>Chandigarh</option>
+                  <option>Puducherry</option>
+                </select>
+              </div>
+              <span class="error-msg" id="err_state"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="pincode"><span data-i18n="f.pincode">Pincode</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-location-pin input-icon"></i>
+                <input type="text" id="pincode" name="pincode" class="form-input" data-i18n-placeholder="p.pincode"
+                  placeholder="6-digit pincode" maxlength="6" pattern="\d{6}" required />
+              </div>
+              <span class="error-msg" id="err_pincode"></span>
+            </div>
+
+          </div>
+        </div><!-- /section 2 -->
+
+        <!-- ===== SECTION 3: DOCUMENT UPLOAD ===== -->
+        <div class="form-section glass-card rounded-3xl p-6 md:p-8 mb-6 section-animate" data-section="3">
+          <div class="section-header flex items-center gap-3 mb-6">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center">
+              <i class="fa-solid fa-file-arrow-up text-white"></i>
+            </div>
+            <div>
+              <h3 class="text-xl font-bold text-gray-800 dark:text-white" data-i18n="s3.title">Document Upload</h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400" data-i18n="s3.sub">Max 2 MB per file · JPG, PNG, PDF
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+            <!-- Student Photo -->
+            <div class="form-group">
+              <label class="form-label" for="photo"><span data-i18n="f.photo">Student Photo</span> <span
+                  class="text-red-500">*</span></label>
+              <label class="upload-zone" for="photo" id="zone_photo">
+                <i class="fa-solid fa-camera text-3xl text-indigo-400 mb-2"></i>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-300" data-i18n="upload.click">Click to
+                  upload</span>
+                <span class="text-xs text-gray-400 mt-1" id="name_photo">JPG / PNG · Max 2 MB</span>
+                <input type="file" id="photo" name="photo" class="hidden" accept=".jpg,.jpeg,.png" required />
+              </label>
+              <span class="error-msg" id="err_photo"></span>
+            </div>
+
+            <!-- Aadhaar Front -->
+            <div class="form-group">
+              <label class="form-label" for="aadhaar_front"><span data-i18n="f.aadhaar_front">Aadhaar Card — Front
+                  Side</span> <span class="text-red-500">*</span></label>
+              <label class="upload-zone" for="aadhaar_front" id="zone_aadhaar_front">
+                <i class="fa-solid fa-id-card text-3xl text-emerald-400 mb-2"></i>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-300" data-i18n="upload.click">Click to
+                  upload</span>
+                <span class="text-xs text-gray-400 mt-1" id="name_aadhaar_front"><span data-i18n="upload.front">Front
+                    Side</span> · JPG / PNG / PDF · Max 2 MB</span>
+                <input type="file" id="aadhaar_front" name="aadhaar_front" class="hidden" accept=".jpg,.jpeg,.png,.pdf"
+                  required />
+              </label>
+              <span class="error-msg" id="err_aadhaar_front"></span>
+            </div>
+
+            <!-- Aadhaar Back -->
+            <div class="form-group">
+              <label class="form-label" for="aadhaar_back"><span data-i18n="f.aadhaar_back">Aadhaar Card — Back
+                  Side</span> <span class="text-red-500">*</span></label>
+              <label class="upload-zone" for="aadhaar_back" id="zone_aadhaar_back">
+                <i class="fa-regular fa-id-card text-3xl text-teal-400 mb-2"></i>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-300" data-i18n="upload.click">Click to
+                  upload</span>
+                <span class="text-xs text-gray-400 mt-1" id="name_aadhaar_back"><span data-i18n="upload.back">Back
+                    Side</span> · JPG / PNG / PDF · Max 2 MB</span>
+                <input type="file" id="aadhaar_back" name="aadhaar_back" class="hidden" accept=".jpg,.jpeg,.png,.pdf"
+                  required />
+              </label>
+              <span class="error-msg" id="err_aadhaar_back"></span>
+            </div>
+
+            <!-- Previous Marksheet -->
+            <div class="form-group">
+              <label class="form-label" for="marksheet"><span data-i18n="f.marksheet">Previous Marksheet</span></label>
+              <label class="upload-zone" for="marksheet" id="zone_marksheet">
+                <i class="fa-solid fa-file-invoice text-3xl text-purple-400 mb-2"></i>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-300" data-i18n="upload.click">Click to
+                  upload</span>
+                <span class="text-xs text-gray-400 mt-1" id="name_marksheet">JPG / PNG / PDF · Max 2 MB</span>
+                <input type="file" id="marksheet" name="marksheet" class="hidden" accept=".jpg,.jpeg,.png,.pdf" />
+              </label>
+              <span class="error-msg" id="err_marksheet"></span>
+            </div>
+
+          </div>
+        </div><!-- /section 3 -->
+
+        <!-- DECLARATION -->
+        <div class="glass-card rounded-3xl p-5 mb-6">
+          <label class="flex items-start gap-3 cursor-pointer">
+            <input type="checkbox" id="declaration"
+              class="mt-1 w-5 h-5 rounded text-indigo-600 border-gray-300 focus:ring-indigo-500" required />
+            <span class="text-sm text-gray-600 dark:text-gray-400" data-i18n="declaration">
+              I hereby declare that all information provided is true and correct to the best of my knowledge.
+              I understand that providing false information may result in disqualification.
+            </span>
+          </label>
+          <span class="error-msg ml-8" id="err_declaration"></span>
+        </div>
+
+        <!-- SUBMIT -->
+        <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+          <button type="button" id="saveBtn"
+            class="w-full sm:w-auto px-6 py-3 rounded-xl border-2 border-indigo-500 text-indigo-600 dark:text-indigo-400 font-semibold hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all flex items-center justify-center gap-2">
+            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="btn.save">Save Draft</span>
+          </button>
+          <button type="submit" id="submitBtn"
+            class="w-full sm:w-auto px-10 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold shadow-lg hover:shadow-indigo-500/30 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span id="submitText" data-i18n="btn.submit">Submit Application</span>
+          </button>
+        </div>
+
+      </form>
+    </main>
+
+    <!-- SUCCESS POPUP -->
+    <div id="successModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" aria-modal="true"
+      role="dialog">
+      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+      <div class="relative glass-card rounded-3xl p-8 max-w-md w-full text-center animate-bounce-in shadow-2xl">
+        <div class="success-ring mx-auto mb-5"><i class="fa-solid fa-check text-white text-3xl"></i></div>
+        <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2" data-i18n="success.title">Application
+          Submitted!</h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-2" data-i18n="success.msg">Your application has been received
+          successfully.</p>
+        <p class="text-sm text-indigo-600 dark:text-indigo-400 font-semibold mb-6" id="appIdText"></p>
+        <button onclick="window.location.reload()"
+          class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold hover:opacity-90 transition-opacity"
+          data-i18n="success.btn">Submit Another Application</button>
+      </div>
+    </div>
+
+    <!-- LOADING OVERLAY -->
+    <div id="loadingOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div class="glass-card rounded-3xl p-8 flex flex-col items-center gap-4">
+        <div class="loader"></div>
+        <p class="text-gray-700 dark:text-gray-300 font-medium" data-i18n="loading">Submitting Application…</p>
+      </div>
+    </div>
+
+    <footer class="text-center py-6 text-sm text-gray-400 dark:text-gray-600">
+      &copy; 2026 School Admission Portal. All rights reserved.
+    </footer>
+
+  </div><!-- /mainContent -->
+
+  <script src="script.js"></script>
+</body>
+
+</html>
