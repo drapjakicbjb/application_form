@@ -259,21 +259,22 @@
 
   <script>
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVz4w18ShRebQeUjKkS2xsYz8AzxoEsNG0Sb0pzWnmgadrJlA6xrySVbLY198gLOyP/exec';
+    const adminUser = localStorage.getItem('admin_user');
     const adminPassword = localStorage.getItem('admin_password');
 
     function checkAuth() {
-      if (!adminPassword) {
+      if (!adminUser || !adminPassword) {
         window.location.href = 'login.html';
         return;
       }
       document.getElementById('bodyContent').classList.remove('hidden');
-      document.getElementById('admin_name').textContent = 'Admin';
+      document.getElementById('admin_name').textContent = adminUser;
       loadStats();
     }
 
     async function loadStats() {
       try {
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_all&password=${adminPassword}`);
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_all&username=${encodeURIComponent(adminUser)}&password=${encodeURIComponent(adminPassword)}`);
         const result = await response.json();
 
         if (!result.success) {
@@ -338,6 +339,7 @@
     }
 
     function handleLogout() {
+      localStorage.removeItem('admin_user');
       localStorage.removeItem('admin_password');
       window.location.href = 'login.html';
     }

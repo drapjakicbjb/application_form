@@ -100,17 +100,19 @@
       loginBtn.disabled = true;
       loginBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Verifying...';
 
+      const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
 
       try {
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_stats&password=${password}`);
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_stats&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);
         const result = await response.json();
 
         if (result.success) {
+          localStorage.setItem('admin_user', username);
           localStorage.setItem('admin_password', password);
           window.location.href = 'dashboard.html';
         } else {
-          errorText.textContent = 'Invalid admin password. Please try again.';
+          errorText.textContent = result.message || 'Invalid credentials. Please try again.';
           errorMsg.classList.remove('hidden');
           loginBtn.disabled = false;
           loginBtn.textContent = 'Sign In to Dashboard';
@@ -125,7 +127,7 @@
     });
 
     function checkSession() {
-      if (localStorage.getItem('admin_password')) {
+      if (localStorage.getItem('admin_user') && localStorage.getItem('admin_password')) {
         window.location.href = 'dashboard.html';
       }
     }

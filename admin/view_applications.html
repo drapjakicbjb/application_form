@@ -171,11 +171,12 @@
 
   <script>
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVz4w18ShRebQeUjKkS2xsYz8AzxoEsNG0Sb0pzWnmgadrJlA6xrySVbLY198gLOyP/exec';
+    const adminUser = localStorage.getItem('admin_user');
     const adminPassword = localStorage.getItem('admin_password');
     let allApplications = [];
 
     function checkAuth() {
-      if (!adminPassword) {
+      if (!adminUser || !adminPassword) {
         window.location.href = 'login.html';
         return;
       }
@@ -193,7 +194,7 @@
       else if (status === 'Rejected') document.getElementById('nav_rejected').classList.add('active'), document.getElementById('nav_all').classList.remove('active');
 
       try {
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_all&password=${adminPassword}`);
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_all&username=${encodeURIComponent(adminUser)}&password=${encodeURIComponent(adminPassword)}`);
         const result = await response.json();
         if (result.success) {
           allApplications = result.data;
@@ -345,7 +346,7 @@
       if (!confirm('Are you sure you want to delete this application? This cannot be undone.')) return;
 
       try {
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=delete_application&id=${id}&password=${adminPassword}`);
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=delete_application&id=${id}&username=${encodeURIComponent(adminUser)}&password=${encodeURIComponent(adminPassword)}`);
         const result = await response.json();
         if (result.success) {
           alert('Application deleted successfully.');
@@ -361,7 +362,7 @@
 
     async function updateStatus(id, newStatus) {
       try {
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=update_status&id=${id}&status=${newStatus}&password=${adminPassword}`);
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=update_status&id=${id}&status=${newStatus}&username=${encodeURIComponent(adminUser)}&password=${encodeURIComponent(adminPassword)}`);
         const result = await response.json();
         if (result.success) {
           document.getElementById('current_status').textContent = newStatus;

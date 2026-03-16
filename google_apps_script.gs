@@ -4,8 +4,8 @@
  */
 
 const SHEET_NAME = 'Applications';
+const ADMIN_SHEET_NAME = 'Admins';
 const FOLDER_ID = 'YOUR_GOOGLE_DRIVE_FOLDER_ID'; // User must replace this
-const ADMIN_PASSWORD = 'admin123'; // Simple password for admin access
 
 /**
  * Handle POST requests (Form Submission)
@@ -63,15 +63,38 @@ function doPost(e) {
 }
 
 /**
+ * Verify Admin Credentials
+ */
+function verifyAdmin(username, password) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let adminSheet = ss.getSheetByName(ADMIN_SHEET_NAME);
+  
+  if (!adminSheet) {
+    adminSheet = ss.insertSheet(ADMIN_SHEET_NAME);
+    adminSheet.appendRow(['Username', 'Password']);
+    adminSheet.appendRow(['admin', 'admin123']); // Default credentials
+  }
+  
+  const data = adminSheet.getDataRange().getValues();
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][0] === username && data[i][1] === password) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
  * Handle GET requests (Fetch Data for Admin)
  */
 function doGet(e) {
   try {
     const action = e.parameter.action;
+    const username = e.parameter.username;
     const password = e.parameter.password;
 
-    if (password !== ADMIN_PASSWORD) {
-      return ContentService.createTextOutput(JSON.stringify({ success: false, message: 'Invalid Password' }))
+    if (!verifyAdmin(username, password)) {
+      return ContentService.createTextOutput(JSON.stringify({ success: false, message: 'Invalid Credentials' }))
         .setMimeType(ContentService.MimeType.JSON);
     }
 
