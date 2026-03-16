@@ -51,7 +51,7 @@ const translations = {
     'f.pincode': 'Pincode',
     // Section 3
     's3.title': 'Document Upload',
-    's3.sub': 'Max 2 MB per file · JPG, PNG, PDF',
+    's3.sub': 'Max 1 MB per file · JPG, PNG, PDF',
     'f.photo': 'Student Photo',
     'f.aadhaar_front': 'Aadhaar Card — Front Side',
     'f.aadhaar_back': 'Aadhaar Card — Back Side',
@@ -157,7 +157,7 @@ const translations = {
     'f.pincode': 'पिनकोड',
     // Section 3
     's3.title': 'दस्तावेज़ अपलोड',
-    's3.sub': 'प्रति फ़ाइल अधिकतम 2 MB · JPG, PNG, PDF',
+    's3.sub': 'प्रति फ़ाइल अधिकतम 1 MB · JPG, PNG, PDF',
     'f.photo': 'छात्र की फोटो',
     'f.aadhaar_front': 'आधार कार्ड — आगे का हिस्सा',
     'f.aadhaar_back': 'आधार कार्ड — पीछे का हिस्सा',
@@ -501,7 +501,7 @@ const ALLOWED_TYPES = {
   aadhaar_back: ['image/jpeg', 'image/png', 'application/pdf'],
   marksheet: ['image/jpeg', 'image/png', 'application/pdf']
 };
-const MAX_SIZE = 2 * 1024 * 1024; // 2 MB
+const MAX_SIZE = 1 * 1024 * 1024; // 1 MB
 
 fileFields.forEach(({ id, zone, label }) => {
   const input = document.getElementById(id);

@@ -374,6 +374,79 @@
         padding: 5px 10px;
       }
     }
+
+    /* Print Header Styles */
+    .print-header {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+      border-bottom: 3px double #1e1b4b;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .print-header img {
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+    }
+
+    .print-header h2 {
+      margin: 0;
+      color: #1e1b4b;
+      font-size: 28px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .print-header p {
+      margin: 5px 0 0;
+      color: #64748b;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    @media print {
+      .print-header {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    .consent-box {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px dashed #cbd5e1;
+    }
+
+    .signature-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      margin-top: 40px;
+    }
+
+    .sig-line {
+      border-top: 1px solid #334155;
+      padding-top: 8px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .verif-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 15px;
+      margin-top: 20px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #475569;
+    }
   </style>
 </head>
 
@@ -385,6 +458,14 @@
   </div>
 
   <div class="confirm-container" id="mainContainer">
+    <!-- PRINT HEADER -->
+    <div class="print-header">
+      <img src="assets/img/dr logo500.png" alt="School Logo">
+      <div>
+        <h2>Dr. A.P.J. Abdul Kalam Inter College</h2>
+        <p>Affiliated to U.P. Board | Recognition No: 123456</p>
+      </div>
+    </div>
     <div class="hero-banner">
       <div class="success-badge"><i class="fa-solid fa-check"></i></div>
       <h1>Submission Successful!</h1>
@@ -471,6 +552,28 @@
           </div>
         </div>
 
+        <!-- PARENT CONSENT & VERIFICATION -->
+        <div class="consent-box">
+          <h3 class="section-title"><i class="fa-solid fa-file-signature"></i> Parent/Guardian Consent</h3>
+          <p class="text-xs text-slate-500 leading-relaxed italic">
+            I hereby declare that all the information provided in this admission form is true and correct to the best of my knowledge and belief. I understand that any false statement or omission may lead to the cancellation of my ward's admission. I agree to abide by the rules and regulations of Dr. A.P.J. Abdul Kalam Inter College.
+          </p>
+          
+          <div class="signature-area">
+            <div class="sig-line">Parent/Guardian Signature</div>
+            <div class="sig-line">Date</div>
+          </div>
+
+          <div class="verif-box">
+            <h4 class="font-bold text-slate-800 uppercase tracking-wider mb-2" style="font-size: 11px;">Official Verification (For School Use Only)</h4>
+            <p>Certified that the original documents (DOB, Aadhaar, Marksheet) have been verified and found to be correct. The applicant is eligible for admission in <strong id="val_class_verif">______</strong> class.</p>
+            <div class="signature-area" style="margin-top: 30px;">
+              <div class="sig-line">Admission In-charge</div>
+              <div class="sig-line">Principal Signature & Seal</div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -522,7 +625,47 @@
         }
 
         const app = result.data;
-        // ... rest of rendering logic ...
+        
+        // Fill values
+        document.getElementById('val_student_name').textContent = app.student_name;
+        document.getElementById('val_dob').textContent = app.dob;
+        document.getElementById('val_gender').textContent = app.gender;
+        document.getElementById('val_class_applied').textContent = app.class_applied;
+        document.getElementById('val_class_verif').textContent = app.class_applied;
+        document.getElementById('display_id').textContent = '#' + String(app.id).padStart(4, '0');
+        document.getElementById('submit_date').textContent = app.date.split(',')[0];
+        document.getElementById('submit_time').textContent = app.date.split(',')[1] || '';
+        
+        document.getElementById('val_father_name').textContent = app.father_name;
+        document.getElementById('val_mother_name').textContent = app.mother_name;
+        document.getElementById('val_phone').textContent = app.phone;
+        document.getElementById('val_email').textContent = app.email || 'N/A';
+        document.getElementById('val_full_address').textContent = `${app.address}, ${app.city}, ${app.state} - ${app.pincode}`;
+
+        if (app.stream) {
+          document.getElementById('stream_box').style.display = 'block';
+          document.getElementById('val_stream').textContent = app.stream;
+        }
+
+        if (app.photo_url) {
+          document.getElementById('photo_container').innerHTML = `<img src="${app.photo_url}" alt="Student Photo">`;
+        }
+
+        // Docs
+        const docsContainer = document.getElementById('docsContainer');
+        const docs = [
+          { label: 'Aadhaar Front', url: app.aadhaar_front_url },
+          { label: 'Aadhaar Back', url: app.aadhaar_back_url },
+          { label: 'Marksheet', url: app.marksheet_url }
+        ];
+
+        docsContainer.innerHTML = docs.map(doc => `
+          <div class="doc-item">
+            ${doc.url ? `<img src="${doc.url}" class="doc-img">` : `<i class="fa-solid fa-file-circle-xmark doc-icon-placeholder" style="color:#cbd5e1"></i>`}
+            <div class="doc-name">${doc.label}</div>
+          </div>
+        `).join('');
+
         document.getElementById('loading').style.display = 'none';
         document.getElementById('mainContainer').style.display = 'block';
       } catch (err) {
