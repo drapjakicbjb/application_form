@@ -28,7 +28,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-V9SX16H4BC"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag() { dataLayer.push(arguments); }
   gtag('js', new Date());
 
   gtag('config', 'G-V9SX16H4BC');
@@ -100,8 +100,8 @@
       loginBtn.disabled = true;
       loginBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Verifying...';
 
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
 
       try {
         const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_stats&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`);

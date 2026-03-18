@@ -517,7 +517,7 @@ fileFields.forEach(({ id, zone, label }) => {
       input.value = ''; return;
     }
     if (file.size > MAX_SIZE) {
-      showError(id, 'File exceeds 2 MB.'); input.value = ''; return;
+      showError(id, `File exceeds 1 MB.`); input.value = ''; return;
     }
     clearError(id);
     // Preserve the sub-text but update filename
@@ -659,7 +659,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     loadingOverlay.classList.remove('hidden'); loadingOverlay.classList.add('flex');
     submitBtn.disabled = true;
-    if (submitText) submitText.textContent = currentLang === 'hi' ? 'जमा हो रहा है…' : 'Submitting…';
+    if (submitText) submitText.textContent = t('loading');
 
     try {
       const formData = new FormData(admissionForm);
@@ -696,11 +696,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const response = await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors', // Important for GAS Web App
-        cache: 'no-cache',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(data)
       });
+
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.message || 'Unknown server error');
+      }
+
+      const newId = result.id;
+
+      console.log("Response received (opaque or not)");
 
       // Note: 'no-cors' mode doesn't allow reading the response body, 
       // but the data will be sent successfully. 
@@ -713,7 +721,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       localStorage.removeItem(AUTO_SAVE_KEY);
       // Since no-cors hides the ID, we redirect to confirmation with a 'success' flag
-      window.location.href = 'confirmation.html?status=success';
+      localStorage.removeItem(AUTO_SAVE_KEY);
+      window.location.href = `confirmation.html?id=${newId}`;
     } catch (err) {
       loadingOverlay.classList.add('hidden'); loadingOverlay.classList.remove('flex');
       submitBtn.disabled = false;

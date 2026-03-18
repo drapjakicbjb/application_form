@@ -5,7 +5,7 @@
 
 const SHEET_NAME = 'Applications';
 const ADMIN_SHEET_NAME = 'Admins';
-const FOLDER_ID = 'YOUR_GOOGLE_DRIVE_FOLDER_ID'; // User must replace this
+const FOLDER_ID = '1LF2HEDtvxsRJ6ICbuUDYP9NoRwbn1_y1'; // User must replace this
 
 /**
  * Handle POST requests (Form Submission)
@@ -20,7 +20,7 @@ function doPost(e) {
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
       const headers = [
-        'ID', 'Status', 'Date', 'Student Name', 'DOB', 'Gender', 'Aadhaar', 'Class', 'Stream', 
+        'ID', 'Status', 'Date', 'Student Name', 'DOB', 'Gender', 'Blood Group', 'Aadhaar', 'Class Applied', 'Stream', 'Previous School',
         'Father Name', 'Mother Name', 'Phone', 'Email', 'Address', 'City', 'State', 'Pincode',
         'Photo URL', 'Aadhaar Front URL', 'Aadhaar Back URL', 'Marksheet URL'
       ];
@@ -29,15 +29,30 @@ function doPost(e) {
 
     const lastRow = sheet.getLastRow();
     const id = lastRow === 1 ? 1 : lastRow;
-    const date = new Date().toLocaleString();
+    const date = new Date().toISOString();
 
     // Handle File Uploads to Google Drive
-    const folder = DriveApp.getFolderById(FOLDER_ID);
+    let folder;
+    try {
+      folder = DriveApp.getFolderById(FOLDER_ID);
+    } catch (e) {
+      console.error("Folder ID error: " + e.message);
+    }
+
+    const ts = Utilities.formatDate(new Date(), "GMT+5:30", "yyyy-MM-dd_HH-mm-ss");
+    
     const uploadFile = (base64, name, mime) => {
-      if (!base64) return '';
-      const blob = Utilities.newBlob(Utilities.base64Decode(base64), mime, name);
-      const file = folder.createFile(blob);
-      return file.getUrl();
+      if (!base64 || !folder) return '';
+      try {
+        const finalName = `${name}_${ts}`;
+        const blob = Utilities.newBlob(Utilities.base64Decode(base64), mime, finalName);
+        const file = folder.createFile(blob);
+        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+        return `https://drive.google.com/uc?export=view&id=${file.getId()}`;
+      } catch (err) {
+        console.error("Upload error: " + err.message);
+        return '';
+      }
     };
 
     const photoUrl = uploadFile(data.photo, `${data.student_name}_photo`, data.photo_mime);
@@ -47,7 +62,7 @@ function doPost(e) {
 
     // Append Data to Sheet
     const row = [
-      id, 'Pending', date, data.student_name, data.dob, data.gender, data.aadhaar, data.class_applied, data.stream || '',
+      id, 'Pending', date, data.student_name, data.dob, data.gender, data.blood_group || '', data.aadhaar, data.class_applied, data.stream || '', data.previous_school || '',
       data.father_name, data.mother_name, data.phone, data.email, data.address, data.city, data.state, data.pincode,
       photoUrl, aadhaarFrontUrl, aadhaarBackUrl, marksheetUrl
     ];
@@ -72,12 +87,13 @@ function verifyAdmin(username, password) {
   if (!adminSheet) {
     adminSheet = ss.insertSheet(ADMIN_SHEET_NAME);
     adminSheet.appendRow(['Username', 'Password']);
-    adminSheet.appendRow(['admin', 'admin123']); // Default credentials
   }
   
   const data = adminSheet.getDataRange().getValues();
   for (let i = 1; i < data.length; i++) {
-    if (data[i][0] === username && data[i][1] === password) {
+    const sheetUser = String(data[i][0]).trim();
+    const sheetPass = String(data[i][1]).trim();
+    if (sheetUser === String(username).trim() && sheetPass === String(password).trim()) {
       return true;
     }
   }
@@ -90,6 +106,30 @@ function verifyAdmin(username, password) {
 function doGet(e) {
   try {
     const action = e.parameter.action;
+    const id = e.parameter.id;
+    
+    // Public action: get_by_id
+    // This allows the confirmation page to show details to the student
+    if (action === 'get_by_id' && id) {
+      const ss = SpreadsheetApp.getActiveSpreadsheet();
+      const sheet = ss.getSheetByName(SHEET_NAME);
+      if (!sheet) return ContentService.createTextOutput(JSON.stringify({ success: false, message: 'Sheet not found' })).setMimeType(ContentService.MimeType.JSON);
+      
+      const data = sheet.getDataRange().getValues();
+      const headers = data.shift();
+      
+      for (let i = 0; i < data.length; i++) {
+        if (data[i][0] == id) {
+          const obj = {};
+          headers.forEach((h, j) => obj[h.toString().trim().toLowerCase().replace(/ /g, '_')] = data[i][j]);
+          return ContentService.createTextOutput(JSON.stringify({ success: true, data: obj }))
+            .setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({ success: false, message: 'Application not found' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     const username = e.parameter.username;
     const password = e.parameter.password;
 
@@ -107,7 +147,7 @@ function doGet(e) {
     
     const jsonData = data.map(row => {
       const obj = {};
-      headers.forEach((h, i) => obj[h.toLowerCase().replace(/ /g, '_')] = row[i]);
+      headers.forEach((h, i) => obj[h.toString().trim().toLowerCase().replace(/ /g, '_')] = row[i]);
       return obj;
     });
 

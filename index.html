@@ -14,7 +14,6 @@
     rel="stylesheet" />
   <link rel="icon" type="image/png" href="assets/img/dr logo500.png">
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -243,7 +242,7 @@
 
     <!-- MAIN FORM -->
     <main class="max-w-4xl mx-auto px-4 pb-16">
-      <form id="admissionForm" action="submit.php" method="POST" enctype="multipart/form-data" novalidate>
+      <form id="admissionForm" onsubmit="return false;" novalidate>
 
         <!-- ===== SECTION 1: STUDENT DETAILS ===== -->
         <div class="form-section glass-card rounded-3xl p-6 md:p-8 mb-6 section-animate" data-section="1">

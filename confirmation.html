@@ -154,6 +154,11 @@
       margin-bottom: 0;
     }
 
+    .wide-section {
+      padding: 0 40px 30px;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+
     .section-title {
       font-size: 14px;
       text-transform: uppercase;
@@ -300,80 +305,115 @@
     }
 
     @media print {
+      @page { margin: 0.5cm; }
       body {
-        background: white;
-        padding: 0;
+        background: white !important;
+        padding: 0 !important;
+        margin: 0 !important;
       }
 
       .confirm-container {
-        box-shadow: none;
-        border: none;
-        max-width: 100%;
-        width: 100%;
+        box-shadow: none !important;
+        border: none !important;
+        max-width: 100% !important;
+        width: 100% !important;
         display: block !important;
+        border-radius: 0 !important;
+        overflow: visible !important;
       }
 
       .actions-bar,
       .success-badge,
-      .hero-banner p,
-      #loading {
-        display: none;
+      .hero-banner,
+      #loading,
+      footer {
+        display: none !important;
       }
 
-      .hero-banner {
-        background: #fff !important;
-        color: #000 !important;
-        padding: 20px;
-        border-bottom: 2px solid #eee;
-      }
-
-      .hero-banner h1 {
-        font-size: 24px;
-        text-align: left;
+      .print-header {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        padding: 30px 20px !important;
+        border-bottom: 2px solid #1e1b4b !important;
       }
 
       .content-layout {
-        display: block;
-        padding: 20px;
+        display: flex !important;
+        flex-direction: row-reverse !important;
+        align-items: flex-start !important;
+        padding: 30px !important;
+        gap: 30px !important;
+        overflow: visible !important;
       }
 
       .student-sidebar {
-        float: right;
-        width: 220px;
-        border-left: 1px solid #eee;
-        padding-left: 20px;
+        width: 220px !important;
+        border: 1px solid #e2e8f0 !important;
+        padding: 10px !important;
+        border-radius: 12px !important;
+        flex-shrink: 0 !important;
+      }
+
+      .photo-box {
+        width: 200px !important;
+        height: 260px !important;
+        margin-bottom: 10px !important;
       }
 
       .student-details {
-        overflow: hidden;
+        flex: 1 !important;
+        overflow: visible !important;
       }
 
       .info-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 15px !important;
+      }
+
+      .info-section {
+        margin-bottom: 25px !important;
+        padding-bottom: 15px !important;
+        page-break-inside: avoid !important;
       }
 
       .section-title {
-        border-bottom: 1px solid #eee;
-        padding-bottom: 5px;
-        margin-top: 20px;
+        color: #1e1b4b !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        padding-bottom: 5px !important;
+        font-size: 11px !important;
+        margin-bottom: 15px !important;
+      }
+
+      .field-label { color: #64748b !important; font-size: 10px !important; }
+      .field-value { color: #000 !important; font-size: 12px !important; }
+
+      .docs-list {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 10px !important;
       }
 
       .doc-item {
-        border: 1px solid #eee;
-        background: white;
-        break-inside: avoid;
+        height: 100px !important;
+        border: 1px solid #e2e8f0 !important;
+        page-break-inside: avoid !important;
       }
 
-      .doc-img {
-        background: white !important;
-        object-fit: contain !important;
+      .wide-section {
+        padding: 0 30px 25px !important;
+        border-bottom: 1px dashed #cbd5e1 !important;
       }
 
-      .reg-id {
-        font-size: 14px;
-        padding: 5px 10px;
+      .consent-box { 
+        border-top: 1px solid #e2e8f0 !important; 
+        margin-top: 30px !important;
+        padding: 20px 30px !important;
+        page-break-inside: avoid !important;
       }
+      .signature-area { margin-top: 50px !important; }
+      .sig-line { border-top-color: #000 !important; color: #000 !important; }
     }
 
     /* Print Header Styles */
@@ -418,7 +458,7 @@
 
     .consent-box {
       margin-top: 40px;
-      padding-top: 20px;
+      padding: 20px 40px 0;
       border-top: 1px dashed #cbd5e1;
     }
 
@@ -448,13 +488,83 @@
       line-height: 1.6;
       color: #475569;
     }
+
+    /* PREVIEW MODAL */
+    #previewModal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    #previewModal.active {
+      display: flex;
+    }
+
+    .preview-content {
+      background: white;
+      width: 100%;
+      max-width: 1000px;
+      height: 90vh;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .preview-header {
+      padding: 15px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+    }
+
+    .preview-body {
+      flex: 1;
+      background: #f1f5f9;
+      position: relative;
+    }
+
+    #previewFrame {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .close-btn {
+      background: #fee2e2;
+      color: #ef4444;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border: none;
+    }
+
+    .doc-item { cursor: pointer; }
+    .doc-item:hover { transform: translateY(-2px); border-color: var(--primary); }
+
+    @media print {
+      #previewModal { display: none !important; }
+    }
   </style>
 </head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4XVKZ4V0NM"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag() { dataLayer.push(arguments); }
   gtag('js', new Date());
 
   gtag('config', 'G-4XVKZ4V0NM');
@@ -473,7 +583,7 @@
       <img src="assets/img/dr logo500.png" alt="School Logo">
       <div>
         <h2>Dr. A.P.J. Abdul Kalam Inter College</h2>
-        <p>Affiliated to U.P. Board | Recognition No: 123456</p>
+        <p>Belwariya Jungle Basti,U.P.-272161 <br>Affiliated to U.P. Board | Recognition No: 123456</p>
       </div>
     </div>
     <div class="hero-banner">
@@ -515,6 +625,10 @@
               <p class="field-value" id="val_gender"></p>
             </div>
             <div>
+              <p class="field-label">Blood Group</p>
+              <p class="field-value" id="val_blood_group"></p>
+            </div>
+            <div>
               <p class="field-label">Class Applied</p>
               <p class="field-value" id="val_class_applied"></p>
             </div>
@@ -553,39 +667,43 @@
               <p class="field-value" id="val_full_address"></p>
             </div>
           </div>
-        </div>
+      </div> <!-- end info-section (Contact) -->
 
-        <div class="info-section">
-          <h3 class="section-title"><i class="fa-solid fa-file-shield"></i> Identity & Documents</h3>
-          <div class="docs-list" id="docsContainer">
-            <!-- Documents injected here -->
-          </div>
-        </div>
+    </div> <!-- Close student-details -->
+  </div> <!-- Close content-layout -->
 
-        <!-- PARENT CONSENT & VERIFICATION -->
-        <div class="consent-box">
-          <h3 class="section-title"><i class="fa-solid fa-file-signature"></i> Parent/Guardian Consent</h3>
-          <p class="text-xs text-slate-500 leading-relaxed italic">
-            I hereby declare that all the information provided in this admission form is true and correct to the best of my knowledge and belief. I understand that any false statement or omission may lead to the cancellation of my ward's admission. I agree to abide by the rules and regulations of Dr. A.P.J. Abdul Kalam Inter College.
-          </p>
-          
-          <div class="signature-area">
-            <div class="sig-line">Parent/Guardian Signature</div>
-            <div class="sig-line">Date</div>
-          </div>
-
-          <div class="verif-box">
-            <h4 class="font-bold text-slate-800 uppercase tracking-wider mb-2" style="font-size: 11px;">Official Verification (For School Use Only)</h4>
-            <p>Certified that the original documents (DOB, Aadhaar, Marksheet) have been verified and found to be correct. The applicant is eligible for admission in <strong id="val_class_verif">______</strong> class.</p>
-            <div class="signature-area" style="margin-top: 30px;">
-              <div class="sig-line">Admission In-charge</div>
-              <div class="sig-line">Principal Signature & Seal</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
+  <div class="info-section wide-section">
+    <h3 class="section-title"><i class="fa-solid fa-file-shield"></i> Identity & Documents</h3>
+    <div class="docs-list" id="docsContainer">
+      <!-- Documents injected here -->
     </div>
+  </div>
+
+  <!-- PARENT CONSENT & VERIFICATION -->
+  <div class="consent-box">
+      <h3 class="section-title"><i class="fa-solid fa-file-signature"></i> Parent/Guardian Consent</h3>
+      <p class="text-xs text-slate-500 leading-relaxed italic">
+        I hereby declare that all the information provided in this admission form is true and correct to the best of
+        my knowledge and belief. I understand that any false statement or omission may lead to the cancellation of
+        my ward's admission. I agree to abide by the rules and regulations of Dr. A.P.J. Abdul Kalam Inter College.
+      </p>
+
+      <div class="signature-area">
+        <div class="sig-line">Parent/Guardian Signature</div>
+        <div class="sig-line">Date</div>
+      </div>
+
+      <div class="verif-box">
+        <h4 class="font-bold text-slate-800 uppercase tracking-wider mb-2" style="font-size: 11px;">Official
+          Verification (For School Use Only)</h4>
+        <p>Certified that the original documents (DOB, Aadhaar, Marksheet) have been verified and found to be
+          correct. The applicant is eligible for admission in <strong id="val_class_verif">______</strong> class.
+        </p>
+        <div class="signature-area" style="margin-top: 30px;">
+          <div class="sig-line">Admission In-charge</div>
+          <div class="sig-line">Principal Signature & Seal</div>
+        </div>
+      </div>
 
     <div class="actions-bar">
       <a href="index.html" class="btn btn-home">
@@ -599,6 +717,26 @@
     </div>
   </div>
 
+  <!-- FILE PREVIEW MODAL -->
+  <div id="previewModal">
+    <div class="preview-content">
+      <div class="preview-header">
+        <h3 id="previewTitle" style="margin:0; font-size:16px;">Document Preview</h3>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <a id="previewDownload" href="#" target="_blank" style="color: var(--primary); font-size: 14px; text-decoration: none;">
+            <i class="fa-solid fa-external-link"></i> Open Original
+          </a>
+          <button onclick="closePreview()" class="close-btn">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      <div class="preview-body">
+        <iframe id="previewFrame" src=""></iframe>
+      </div>
+    </div>
+  </div>
+
   <footer style="text-align: center; margin-top: 30px; color: #94a3b8; font-size: 13px;">
     &copy; 2026 Dr. A.P.J. Abdul Kalam Inter College. All rights reserved.
   </footer>
@@ -606,46 +744,113 @@
   <script>
     const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVz4w18ShRebQeUjKkS2xsYz8AzxoEsNG0Sb0pzWnmgadrJlA6xrySVbLY198gLOyP/exec';
 
-    async function loadApplication() {
+    function formatIST(dateStr) {
+      if (!dateStr) return { date: '—', time: '' };
+      try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return { date: dateStr, time: '' };
+        const datePart = new Intl.DateTimeFormat('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }).format(d);
+        const timePart = new Intl.DateTimeFormat('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        }).format(d);
+        return { date: datePart, time: timePart };
+      } catch (e) { return { date: dateStr, time: '' }; }
+    }
+
+    function formatIndDate(dateStr) {
+      if (!dateStr) return '—';
+      try {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return dateStr;
+        return new Intl.DateTimeFormat('en-IN', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        }).format(d).replace(/\//g, '-');
+      } catch (e) { return dateStr; }
+    }
+
+    // Google Drive URL Helpers
+    function getDriveId(url) {
+      if (!url) return null;
+      if (url.includes('/d/')) return url.split('/d/')[1].split('/')[0];
+      const match = url.match(/[?&]id=([^&]+)/);
+      return match ? match[1] : null;
+    }
+
+    function getPreviewUrl(url) {
+      const id = getDriveId(url);
+      return id ? `https://drive.google.com/file/d/${id}/preview` : url;
+    }
+
+    function getThumbUrl(url) {
+      const id = getDriveId(url);
+      return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w500` : url;
+    }
+
+    function openPreview(url, title) {
+      const modal = document.getElementById('previewModal');
+      const frame = document.getElementById('previewFrame');
+      const titleEl = document.getElementById('previewTitle');
+      const downloadLink = document.getElementById('previewDownload');
+
+      titleEl.textContent = title;
+      downloadLink.href = url.replace('export=view&', '');
+      frame.src = getPreviewUrl(url);
+      modal.classList.add('active');
+    }
+
+    function closePreview() {
+      document.getElementById('previewModal').classList.remove('active');
+      document.getElementById('previewFrame').src = '';
+    }
+
+    async function loadApplication(retryCount = 0) {
       const urlParams = new URLSearchParams(window.location.search);
       const id = urlParams.get('id');
-      const status = urlParams.get('status');
-
-      if (status === 'success' && !id) {
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('mainContainer').style.display = 'block';
-        document.getElementById('display_id').textContent = 'Processing...';
-        // Hide details that require ID
-        document.querySelector('.content-layout').style.display = 'none';
-        return;
-      }
 
       if (!id) {
         window.location.href = 'index.html';
         return;
       }
 
-      // If ID is present, we can try to fetch (requires CORS enabled in GAS)
       try {
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?id=${id}`);
+        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_by_id&id=${id}`);
         const result = await response.json();
 
         if (!result.success || !result.data) {
-          throw new Error('Data not found');
+          // If not found, retry once after a delay (Google Sheets sometimes has latency)
+          if (retryCount < 2) {
+            console.log(`Retrying... Attempt ${retryCount + 1}`);
+            setTimeout(() => loadApplication(retryCount + 1), 2000);
+            return;
+          }
+          throw new Error('Application details not found yet. Please refresh in a moment.');
         }
 
         const app = result.data;
-        
+
         // Fill values
         document.getElementById('val_student_name').textContent = app.student_name;
-        document.getElementById('val_dob').textContent = app.dob;
+        document.getElementById('val_dob').textContent = formatIndDate(app.dob);
         document.getElementById('val_gender').textContent = app.gender;
+        document.getElementById('val_blood_group').textContent = app.blood_group || '—';
         document.getElementById('val_class_applied').textContent = app.class_applied;
         document.getElementById('val_class_verif').textContent = app.class_applied;
         document.getElementById('display_id').textContent = '#' + String(app.id).padStart(4, '0');
-        document.getElementById('submit_date').textContent = app.date.split(',')[0];
-        document.getElementById('submit_time').textContent = app.date.split(',')[1] || '';
         
+        const ist = formatIST(app.date);
+        document.getElementById('submit_date').textContent = ist.date;
+        document.getElementById('submit_time').textContent = ist.time;
+
         document.getElementById('val_father_name').textContent = app.father_name;
         document.getElementById('val_mother_name').textContent = app.mother_name;
         document.getElementById('val_phone').textContent = app.phone;
@@ -657,8 +862,16 @@
           document.getElementById('val_stream').textContent = app.stream;
         }
 
+        if (app.previous_school) {
+          document.getElementById('prev_school_box').style.display = 'block';
+          document.getElementById('val_previous_school').textContent = app.previous_school;
+        } else {
+          document.getElementById('prev_school_box').style.display = 'none';
+        }
+
         if (app.photo_url) {
-          document.getElementById('photo_container').innerHTML = `<img src="${app.photo_url}" alt="Student Photo">`;
+          const thumb = getThumbUrl(app.photo_url);
+          document.getElementById('photo_container').innerHTML = `<img src="${thumb}" alt="Student Photo">`;
         }
 
         // Docs
@@ -670,9 +883,10 @@
         ];
 
         docsContainer.innerHTML = docs.map(doc => `
-          <div class="doc-item">
-            ${doc.url ? `<img src="${doc.url}" class="doc-img">` : `<i class="fa-solid fa-file-circle-xmark doc-icon-placeholder" style="color:#cbd5e1"></i>`}
+          <div class="doc-item" onclick="openPreview('${doc.url}', '${doc.label}')">
+            ${doc.url ? `<img src="${getThumbUrl(doc.url)}" class="doc-img">` : `<i class="fa-solid fa-file-circle-xmark doc-icon-placeholder" style="color:#cbd5e1"></i>`}
             <div class="doc-name">${doc.label}</div>
+            <div style="position:absolute; top:5px; right:5px; background:rgba(255,255,255,0.8); border-radius:4px; padding:2px 5px; font-size:8px; font-weight:bold; color:var(--primary);"><i class="fa-solid fa-eye"></i></div>
           </div>
         `).join('');
 
