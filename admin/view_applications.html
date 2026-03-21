@@ -130,8 +130,8 @@
 
     .signature-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
       margin-top: 20px;
     }
 
@@ -773,12 +773,13 @@
 
         <div class="legal-section">
           <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-widest mb-4 flex items-center"><span class="w-2 h-2 bg-slate-400 rounded-full mr-2"></span> Parent/Guardian Consent</h3>
+            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-widest mb-4 flex items-center"><span class="w-2 h-2 bg-slate-400 rounded-full mr-2"></span> Parent/Guardian and Student Consent</h3>
             <p class="consent-text">
               I hereby declare that all the information provided in this admission form is true and correct to the best of my knowledge and belief. I understand that any false statement or omission may lead to the cancellation of my ward's admission. I agree to abide by the rules and regulations of <b>${schoolName}</b>.
             </p>
             <div class="signature-grid">
               <div class="sig-line">Parent/Guardian Signature</div>
+              <div class="sig-line">Student Signature</div>
               <div class="sig-line">Date</div>
             </div>
           </div>
