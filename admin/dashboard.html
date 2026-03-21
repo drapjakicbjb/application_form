@@ -10,124 +10,145 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: { extend: { fontFamily: { inter: ['Inter', 'sans-serif'] } } }
+    };
+  </script>
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background: #f1f5f9;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #f1f5f9;
+      color: #334155;
     }
 
-    .stat-card {
-      padding: 1.5rem;
-      border-radius: 1rem;
-      color: white;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    /* Modern Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { border-radius: 20px; background-color: #cbd5e1; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background-color: #94a3b8; }
 
-    .stat-icon {
-      font-size: 3rem;
-      opacity: 0.2;
-      position: absolute;
-      right: -0.5rem;
-      bottom: -0.5rem;
-    }
-
-    .data-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .data-table th {
-      text-align: left;
-      padding: 12px 24px;
-      font-size: 11px;
-      text-transform: uppercase;
-      color: #64748b;
-      font-weight: 700;
-      border-bottom: 1px solid #f1f5f9;
-    }
-
-    .data-table td {
-      padding: 16px 24px;
-      border-bottom: 1px solid #f1f5f9;
-      font-size: 14px;
-    }
-
-    .badge {
-      padding: 4px 10px;
-      border-radius: 100px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-
-    .badge-pending {
-      background: #fef3c7;
-      color: #d97706;
-    }
-
-    .badge-accepted {
-      background: #dcfce7;
-      color: #16a34a;
-    }
-
-    .badge-rejected {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-
-    .badge-reviewed {
-      background: #dbeafe;
-      color: #2563eb;
-    }
-
-    .btn-view {
-      padding: 6px 12px;
-      border-radius: 6px;
-      background: #f1f5f9;
-      color: #475569;
-      font-size: 12px;
-      font-weight: 600;
-      transition: 0.2s;
-    }
-
-    .btn-view:hover {
-      background: #e2e8f0;
-      color: #1e293b;
-    }
-
+    /* Sidebar */
     .admin-sidebar {
-      background: #1e1b4b;
-      color: white;
-      width: 260px;
+      background: linear-gradient(180deg, #1e1b4b 0%, #312e81 100%);
+      width: 280px;
       height: 100vh;
       position: sticky;
       top: 0;
+      box-shadow: 4px 0 24px rgba(0,0,0,0.1);
     }
 
     .nav-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 24px;
-      color: #a5b4fc;
-      transition: 0.2s;
+      gap: 14px;
+      padding: 14px 28px;
+      color: #94a3b8;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       font-size: 14px;
       font-weight: 500;
+      border-right: 4px solid transparent;
     }
 
     .nav-item:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: white;
+      background: rgba(255, 255, 255, 0.03);
+      color: #e2e8f0;
     }
 
     .nav-item.active {
+      background: linear-gradient(90deg, rgba(79, 70, 229, 0.1) 0%, rgba(79, 70, 229, 0) 100%);
+      color: white;
+      border-right-color: #4f46e5;
+    }
+
+    /* Stats Cards */
+    .stat-card {
+      background: white;
+      border-radius: 24px;
+      padding: 24px;
+      border: 1px solid #f8fafc;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); }
+
+    .stat-icon-bg {
+       width: 48px; height: 48px; border-radius: 14px;
+       display: flex; align-items: center; justify-content: center;
+       margin-bottom: 20px;
+    }
+
+    /* Table Styles */
+    .data-table th {
+      text-align: left;
+      padding: 16px 24px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #94a3b8;
+      font-weight: 800;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .data-table td {
+      padding: 18px 24px;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .badge {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; display: block; }
+    
+    .badge-pending { background: #fffbeb; color: #b45309; }
+    .badge-pending::before { background: #f59e0b; }
+    
+    .badge-accepted { background: #f0fdf4; color: #15803d; }
+    .badge-accepted::before { background: #22c55e; }
+    
+    .badge-rejected { background: #fef2f2; color: #b91c1c; }
+    .badge-rejected::before { background: #ef4444; }
+
+    .btn-view {
+      padding: 8px 16px;
+      border-radius: 10px;
+      background: #f1f5f9;
+      color: #475569;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+
+    .btn-view:hover {
       background: #4f46e5;
       color: white;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
     }
+
+    /* Dark Mode Overrides */
+    .dark body { background-color: #0b0e14; color: #f1f5f9; }
+    .dark header, .dark .bg-white, .dark .stat-card { background-color: #161b22 !important; border-color: #30363d !important; }
+    .dark .text-slate-800, .dark .text-gray-800, .dark .text-slate-700 { color: #f0f6fc !important; }
+    .dark .text-slate-400, .dark .text-gray-400 { color: #8b949e !important; }
+    .dark .border-slate-100, .dark .border-slate-200, .dark .border-b, .dark .border-t { border-color: #30363d !important; }
+    .dark .bg-slate-50, .dark .bg-slate-100 { background-color: #0d1117 !important; }
+    .dark .bg-slate-50\/30 { background-color: rgba(22, 27, 34, 0.5) !important; }
+    .dark .data-table td { color: #e6edf3; }
+    .dark select, .dark input { background-color: #0d1117 !important; color: white !important; border-color: #30363d !important; }
+    .dark #ist_clock { color: #f0f6fc !important; }
   </style>
 </head>
 
@@ -145,14 +166,17 @@
   <div class="flex h-screen overflow-hidden">
 
     <!-- ===== SIDEBAR ===== -->
-    <aside class="admin-sidebar hidden md:flex flex-col py-6">
-      <div class="flex items-center gap-3 px-6 mb-8">
-        <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center">
-          <i class="fa-solid fa-graduation-cap text-white text-lg"></i>
+    <aside class="admin-sidebar hidden md:flex flex-col py-8">
+      <div class="flex items-center gap-4 px-8 mb-12 group cursor-pointer">
+        <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+          <i class="fa-solid fa-school text-white text-xl"></i>
         </div>
         <div>
-          <p class="text-white font-bold text-sm leading-tight">School Admin</p>
-          <p class="text-indigo-400 text-xs">Management Panel</p>
+          <p class="text-white font-black text-sm tracking-tight leading-none mb-1 school-name-display">Management Panel</p>
+          <div class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <p class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Admin Live</p>
+          </div>
         </div>
       </div>
       <nav class="flex-1 space-y-0.5">
@@ -198,10 +222,6 @@
             <span id="ist_clock" class="text-sm font-mono font-bold text-slate-700">00:00:00 AM</span>
             <span class="text-[9px] text-slate-400 uppercase tracking-tighter">India Standard Time</span>
           </div>
-          <button id="darkToggle"
-            class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-indigo-100 hover:text-indigo-600 transition-colors">
-            <i class="fa-solid fa-moon text-xs"></i>
-          </button>
         </div>
       </header>
 
@@ -219,44 +239,61 @@
         </header>
 
         <main class="p-6 space-y-6">
-          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-            <div class="stat-card" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
-              <div>
-                <p class="text-indigo-200 text-xs font-semibold uppercase tracking-wider">Total Applications</p>
-                <p class="text-4xl font-extrabold mt-1" id="stat_total">0</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+            <div class="stat-card">
+              <div class="stat-icon-bg bg-indigo-50 text-indigo-600">
+                 <i class="fa-solid fa-file-invoice text-xl"></i>
               </div>
-              <div class="stat-icon"><i class="fa-solid fa-file-lines"></i></div>
+              <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-1">Total Submissions</p>
+              <p class="text-3xl font-black text-slate-800" id="stat_total">0</p>
+              <div class="absolute top-0 right-0 p-4 opacity-[0.03] pointer-events-none">
+                 <i class="fa-solid fa-file-invoice text-8xl"></i>
+              </div>
             </div>
-            <div class="stat-card" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
-              <div>
-                <p class="text-amber-100 text-xs font-semibold uppercase tracking-wider">Pending Review</p>
-                <p class="text-4xl font-extrabold mt-1" id="stat_pending">0</p>
+
+            <div class="stat-card">
+              <div class="stat-icon-bg bg-amber-50 text-amber-600">
+                 <i class="fa-solid fa-hourglass-start text-xl"></i>
               </div>
-              <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+              <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-1">Pending Review</p>
+              <p class="text-3xl font-black text-slate-800" id="stat_pending">0</p>
+              <div class="absolute top-0 right-0 p-4 opacity-[0.03] pointer-events-none">
+                 <i class="fa-solid fa-hourglass-start text-8xl"></i>
+              </div>
             </div>
-            <div class="stat-card" style="background:linear-gradient(135deg,#10b981,#059669)">
-              <div>
-                <p class="text-emerald-100 text-xs font-semibold uppercase tracking-wider">Accepted</p>
-                <p class="text-4xl font-extrabold mt-1" id="stat_accepted">0</p>
+
+            <div class="stat-card">
+              <div class="stat-icon-bg bg-emerald-50 text-emerald-600">
+                 <i class="fa-solid fa-circle-check text-xl"></i>
               </div>
-              <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
+              <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-1">Approved Applications</p>
+              <p class="text-3xl font-black text-slate-800" id="stat_accepted">0</p>
+              <div class="absolute top-0 right-0 p-4 opacity-[0.03] pointer-events-none">
+                 <i class="fa-solid fa-circle-check text-8xl"></i>
+              </div>
             </div>
-            <div class="stat-card" style="background:linear-gradient(135deg,#ec4899,#be185d)">
-              <div>
-                <p class="text-pink-100 text-xs font-semibold uppercase tracking-wider">Today</p>
-                <p class="text-4xl font-extrabold mt-1" id="stat_today">0</p>
+
+            <div class="stat-card">
+              <div class="stat-icon-bg bg-purple-50 text-purple-600">
+                 <i class="fa-solid fa-bolt text-xl"></i>
               </div>
-              <div class="stat-icon"><i class="fa-solid fa-calendar-day"></i></div>
+              <p class="text-slate-400 text-[10px] font-black uppercase tracking-[0.15em] mb-1">Today</p>
+              <p class="text-3xl font-black text-slate-800" id="stat_today">0</p>
+              <div class="absolute top-0 right-0 p-4 opacity-[0.03] pointer-events-none">
+                 <i class="fa-solid fa-bolt text-8xl"></i>
+              </div>
             </div>
           </div>
 
-          <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100">
-            <div class="px-6 py-4 border-b flex items-center justify-between">
-              <h3 class="font-bold text-gray-700 flex items-center gap-2">
-                <i class="fa-solid fa-clock-rotate-left text-indigo-500"></i> Recent Applications
-              </h3>
-              <a href="view_applications.html" class="text-xs text-indigo-600 hover:underline font-semibold">View All
-                →</a>
+          <div class="bg-white rounded-3xl shadow-sm overflow-hidden border border-slate-100">
+            <div class="px-8 py-6 border-b flex items-center justify-between bg-slate-50/30">
+              <div>
+                 <h3 class="font-black text-slate-800 text-sm uppercase tracking-widest flex items-center gap-2">
+                   <i class="fa-solid fa-clock-rotate-left text-indigo-500"></i> Recent Admissions
+                 </h3>
+                 <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">Latest application updates</p>
+              </div>
+              <a href="view_applications.html" class="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all">View Analytics →</a>
             </div>
             <div class="overflow-x-auto">
               <table class="data-table">

@@ -13,22 +13,28 @@ body {
 
 /* ---------- Glassmorphism Card ---------- */
 .glass-card {
-  background: rgba(255, 255, 255, 0.80);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.60);
-  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.08);
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.50);
+  box-shadow: 
+    0 10px 15px -3px rgba(0, 0, 0, 0.05),
+    0 4px 6px -2px rgba(0, 0, 0, 0.02),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .glass-card:hover {
-  box-shadow: 0 12px 40px rgba(99, 102, 241, 0.14);
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.08),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
 }
 
 /* dark mode glass */
 .dark .glass-card {
-  background: rgba(30, 27, 75, 0.60);
-  border-color: rgba(99, 102, 241, 0.20);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.40);
+  background: rgba(15, 23, 42, 0.70);
+  border-color: rgba(148, 163, 184, 0.1);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.50);
 }
 
 /* ---------- Form Labels ---------- */
@@ -60,24 +66,27 @@ body {
 /* ---------- Form Inputs ---------- */
 .form-input {
   width: 100%;
-  padding: 0.65rem 1rem 0.65rem 2.5rem;
-  border-radius: 0.75rem;
-  border: 1.5px solid #e5e7eb;
-  background: rgba(255, 255, 255, 0.9);
-  color: #111827;
-  font-size: 0.9rem;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  border-radius: 1rem;
+  border: 1.5px solid #f1f5f9;
+  background: #f8fafc;
+  color: #1e293b;
+  font-size: 0.938rem;
+  font-weight: 500;
   font-family: 'Inter', sans-serif;
   outline: none;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.02);
 }
-.form-input::placeholder { color: #9ca3af; }
+.form-input::placeholder { color: #94a3b8; font-weight: 400; }
 .form-input:focus {
   border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
-  background: #fff;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  background: #ffffff;
+  transform: scale(1.005);
 }
 .form-input:focus + .input-icon,
-.input-wrapper:focus-within .input-icon { color: #6366f1; }
+.input-wrapper:focus-within .input-icon { color: #6366f1; transform: translateY(-50%) scale(1.1); }
 
 /* dark */
 .dark .form-input {
@@ -135,19 +144,20 @@ textarea.form-input {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem 1rem;
-  border: 2px dashed #c7d2fe;
-  border-radius: 1rem;
-  background: rgba(238, 242, 255, 0.5);
+  padding: 2rem 1rem;
+  border: 2px dashed #e2e8f0;
+  border-radius: 1.25rem;
+  background: #f8fafc;
   cursor: pointer;
-  transition: border-color 0.25s, background 0.25s, transform 0.2s;
-  min-height: 130px;
+  transition: all 0.3s ease;
+  min-height: 150px;
   text-align: center;
 }
 .upload-zone:hover {
   border-color: #6366f1;
-  background: rgba(238, 242, 255, 0.9);
-  transform: translateY(-2px);
+  background: #f1f5f9;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
 }
 .upload-zone.uploaded {
   border-color: #10b981;
@@ -390,3 +400,17 @@ textarea.form-input {
 @media (max-width: 640px) {
   .admin-sidebar { width: 100%; min-height: auto; }
 }
+
+/* ---------- Animations ---------- */
+.section-animate {
+  animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes slideUpFade {
+  0% { opacity: 0; transform: translateY(40px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.form-section:nth-child(1) { animation-delay: 0.1s; }
+.form-section:nth-child(2) { animation-delay: 0.3s; }
+.form-section:nth-child(3) { animation-delay: 0.5s; }
