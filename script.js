@@ -259,7 +259,7 @@ const translations = {
     'opt.blood_def': 'रक्त समूह चुनें',
     'opt.class_def': 'कक्षा चुनें',
     'opt.state_def': 'राज्य चुनें',
-    'btn.change_level': 'क्लास स्तर बदलें',
+    'btn.change_level': 'कक्षा स्तर बदलें',
     // Buttons
     'btn.save': 'मसौदा सहेजें',
     'btn.submit': 'आवेदन जमा करें',
@@ -971,8 +971,6 @@ function showToast(msg, type = 'success') {
   document.body.appendChild(toast);
   setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
 }
-
-
 // =============================================
 // 12. INIT
 // =============================================

@@ -9,6 +9,7 @@
 body {
   font-family: 'Inter', sans-serif;
   scroll-behavior: smooth;
+  min-width: 1280px;
 }
 
 /* ---------- Glassmorphism Card ---------- */
