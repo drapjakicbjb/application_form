@@ -119,6 +119,7 @@ const translations = {
     'opt.blood_def': 'Select Blood Group',
     'opt.class_def': 'Select Class',
     'opt.state_def': 'Select State',
+    'btn.change_level': 'Change Class Level',
     // Buttons
     'btn.save': 'Save Draft',
     'btn.submit': 'Submit Application',
@@ -258,6 +259,7 @@ const translations = {
     'opt.blood_def': 'रक्त समूह चुनें',
     'opt.class_def': 'कक्षा चुनें',
     'opt.state_def': 'राज्य चुनें',
+    'btn.change_level': 'क्लास स्तर बदलें',
     // Buttons
     'btn.save': 'मसौदा सहेजें',
     'btn.submit': 'आवेदन जमा करें',
