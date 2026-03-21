@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=1280" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard | School Admin</title>
   <link rel="icon" type="image/png" href="../assets/img/dr logo500.png">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -251,10 +251,14 @@
 </script>
 
 <body class="hidden" id="bodyContent">
+  <div id="mobileOverlay" onclick="toggleSidebar()"
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 hidden md:hidden transition-opacity duration-300"></div>
+
   <div class="flex h-screen overflow-hidden">
 
     <!-- ===== SIDEBAR ===== -->
-    <aside class="admin-sidebar hidden md:flex flex-col py-8">
+    <aside id="adminSidebar"
+      class="admin-sidebar fixed md:sticky inset-y-0 left-0 -translate-x-full md:translate-x-0 md:flex flex-col py-8 z-50 transition-transform duration-300">
       <div class="flex items-center gap-4 px-8 mb-12 group cursor-pointer">
         <div
           class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
@@ -297,6 +301,9 @@
       <!-- Top Bar -->
       <header class="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-8 flex-shrink-0">
         <div class="flex items-center gap-4 flex-1">
+          <button onclick="toggleSidebar()" class="md:hidden p-2 text-slate-500 hover:bg-slate-100 rounded-lg">
+            <i class="fa-solid fa-bars-staggered text-lg"></i>
+          </button>
           <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider hidden lg:block">Dashboard</h2>
 
           <!-- Global Search -->
@@ -541,6 +548,18 @@
       localStorage.removeItem('admin_user');
       localStorage.removeItem('admin_password');
       window.location.href = 'login.html';
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('adminSidebar');
+      const overlay = document.getElementById('mobileOverlay');
+      if (sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('hidden');
+      }
     }
 
     checkAuth();

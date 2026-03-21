@@ -15,25 +15,21 @@ const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc6DlGn3m3YT
 const schoolMapping = {
   primary: {
     en: "R.S.Y. Convent School",
-    hi: "आर.एस.वाई. कॉन्वेंट स्कूल",
     levels: "Nursery - Class 5",
     logo: "assets/img/rsy_logo.png"
   },
   middle: {
     en: "Late Dal Sringari Memorial Balika Junior High School",
-    hi: "स्व. दल श्रृंगारी मेमोरियल बालिका जूनियर हाई स्कूल",
     levels: "Class 6 - Class 8",
     logo: "assets/img/dal_sringari_logo.png"
   },
   secondary: {
     en: "Dr. A.P.J. Abdul Kalam Inter College",
-    hi: "डॉ. ए.पी.जे. अब्दुल कलाम इंटर कॉलेज",
     levels: "Class 9 - Class 10",
     logo: "assets/img/dr logo500.png"
   },
   higher_secondary: {
     en: "Dr. A.P.J. Abdul Kalam Inter College",
-    hi: "डॉ. ए.पी.जे. अब्दुल कलाम इंटर कॉलेज",
     levels: "Class 11 - Class 12",
     logo: "assets/img/dr logo500.png"
   }
@@ -44,7 +40,7 @@ const translations = {
     // Header
     'header.title': 'School Admission Portal',
     'header.year': 'Academic Year 2026–26',
-    'header.admin': 'Admin',
+    'header.admin': 'Admin Portal',
     // Hero
     'hero.badge': 'Admissions Open',
     'hero.title': 'Apply for Admission',
@@ -184,12 +180,10 @@ const translations = {
   },
   hi: {
     // Header
-    'header.title': 'स्कूल प्रवेश पोर्टल',
+    'header.title': '',
     'header.year': 'शैक्षणिक वर्ष 2026–26',
-    'header.admin': 'एडमिन',
     // Hero
-    'hero.badge': 'प्रवेश खुले हैं',
-    'hero.title': 'प्रवेश के लिए आवेदन करें',
+    'hero.title': '',
     'hero.subtitle': 'नीचे दिया गया फॉर्म ध्यानपूर्वक भरें। जिन क्षेत्रों में',
     'hero.mandatory': 'का चिह्न है, वे आवश्यक हैं।',
     // Progress
@@ -223,7 +217,7 @@ const translations = {
     'f.caste': 'जाति (Caste)',
     'opt.religion_def': 'धर्म चुनें',
     'opt.category_def': 'श्रेणी चुनें',
-    'p.caste': 'अपनी जाति दर्ज करें (जैसे: ब्राह्मण, जाट, आदि)',
+    'p.caste': 'अपनी जाति दर्ज करें',
     'opt.hindu': 'हिंदू',
     'opt.muslim': 'मुस्लिम',
     'opt.sikh': 'सिख',
@@ -329,17 +323,19 @@ let currentLang = 'en';
 if (!localStorage.getItem('lang')) localStorage.setItem('lang', 'en');
 currentLang = localStorage.getItem('lang') || 'en';
 
-// Translate helper
+// Translate helper (Returns English / Hindi)
 function t(key) {
-  return (translations[currentLang] && translations[currentLang][key]) || translations['en'][key] || key;
+  const en = (translations['en'] && translations['en'][key]) || key;
+  const hi = (translations['hi'] && translations['hi'][key]) || "";
+  if (!hi || en === hi) return en;
+  return `${en} / ${hi}`;
 }
 
 // =============================================
 // 2. APPLY LANGUAGE — updates all data-i18n elements
 // =============================================
-function applyLanguage(lang) {
-  currentLang = lang;
-  document.getElementById('htmlRoot').setAttribute('lang', lang === 'hi' ? 'hi' : 'en');
+function applyLanguage() {
+  document.getElementById('htmlRoot').setAttribute('lang', 'en');
 
   // Text content
   document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -348,10 +344,12 @@ function applyLanguage(lang) {
     if (val) el.textContent = val;
   });
 
-  const selectedLevel = localStorage.getItem('selectedLevel') || 'primary';
+  const selectedLevel = localStorage.getItem('selectedLevel') || 'secondary';
   const schoolData = schoolMapping[selectedLevel];
-  const schoolName = schoolData[currentLang];
-  document.querySelectorAll('.school-name-display').forEach(el => el.textContent = schoolName);
+  const schoolNameEn = schoolData['en'];
+  const schoolNameHi = schoolData['hi'];
+  const combinedName = schoolNameHi ? `${schoolNameEn} / ${schoolNameHi}` : schoolNameEn;
+  document.querySelectorAll('.school-name-display').forEach(el => el.textContent = combinedName);
 
   // Logo update
   const logoPath = schoolData.logo;
@@ -371,9 +369,7 @@ function applyLanguage(lang) {
     if (val) opt.textContent = val;
   });
 
-  // Update language label in header
-  const label = document.getElementById('currentLangLabel');
-  if (label) label.textContent = lang === 'hi' ? 'हिं' : 'EN';
+  // Language labels not needed anymore
   document.body.style.fontFamily = lang === 'hi'
     ? "'Noto Sans Devanagari', 'Inter', sans-serif"
     : "'Inter', 'Noto Sans Devanagari', sans-serif";
@@ -384,120 +380,53 @@ function applyLanguage(lang) {
 // =============================================
 // 3. LANDING & SELECTION LOGIC
 // =============================================
-function selectLevel(level) {
+function handleClassChange(val) {
+  if (!val) return;
+  let level = 'secondary';
+  const primaryArr = ['Nursery', 'LKG', 'UKG', 'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5'];
+  const middleArr = ['Class 6', 'Class 7', 'Class 8'];
+  const secondaryArr = ['Class 9', 'Class 10'];
+  const higherArr = ['Class 11', 'Class 12'];
+
+  if (primaryArr.includes(val)) level = 'primary';
+  else if (middleArr.includes(val)) level = 'middle';
+  else if (secondaryArr.includes(val)) level = 'secondary';
+  else if (higherArr.includes(val)) level = 'higher_secondary';
+
   localStorage.setItem('selectedLevel', level);
-  const schoolName = schoolMapping[level][currentLang];
-  document.querySelectorAll('.school-name-display').forEach(el => el.textContent = schoolName);
+  applyBranding(level);
 
-  // Update class options based on level
-  updateClassOptions(level);
-
-  const levelModal = document.getElementById('levelModal');
-  const langModal = document.getElementById('langModal');
-
-  levelModal.style.transition = 'opacity 0.5s ease';
-  levelModal.style.opacity = '0';
-  setTimeout(() => {
-    levelModal.classList.add('hidden');
-
-    // Go directly to content (English by default or saved)
-    const content = document.getElementById('mainContent');
-    applyLanguage(currentLang);
-    content.classList.remove('hidden');
-    content.style.opacity = '0';
-    content.style.transition = 'opacity 0.4s ease';
-    requestAnimationFrame(() => { content.style.opacity = '1'; });
-  }, 500);
-}
-
-function updateClassOptions(level) {
-  const classSel = document.getElementById('class_applied');
-  if (!classSel) return;
-
-  let classes = [];
-  if (level === 'primary') classes = ['Nursery', 'LKG', 'UKG', 'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5'];
-  else if (level === 'middle') classes = ['Class 6', 'Class 7', 'Class 8'];
-  else if (level === 'secondary') classes = ['Class 9', 'Class 10'];
-  else if (level === 'higher_secondary') classes = ['Class 11', 'Class 12'];
-
-  classSel.innerHTML = `<option value="" data-i18n="opt.class_def">${t('opt.class_def')}</option>`;
-  classes.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c;
-    opt.textContent = c;
-    classSel.appendChild(opt);
-  });
-}
-
-function selectLanguage(lang) {
-  // Animate chosen card
-  const card = document.getElementById('card_' + lang);
-  if (card) {
-    card.style.transform = 'scale(0.95)';
-    card.style.opacity = '0.8';
+  // Show/Hide Medium field based on class
+  const mediumGroup = document.getElementById('medium_group');
+  if (mediumGroup) {
+    if (primaryArr.includes(val)) {
+      mediumGroup.style.display = 'none';
+      document.getElementById('medium').required = false;
+    } else {
+      mediumGroup.style.display = 'block';
+      document.getElementById('medium').required = true;
+    }
   }
-  setTimeout(() => {
-    applyLanguage(lang);
-    const modal = document.getElementById('langModal');
-    const content = document.getElementById('mainContent');
-    // Fade out modal
-    modal.style.transition = 'opacity 0.5s ease';
-    modal.style.opacity = '0';
-    setTimeout(() => {
-      modal.classList.add('hidden');
-      content.classList.remove('hidden');
-      content.style.opacity = '0';
-      content.style.transition = 'opacity 0.4s ease';
-      requestAnimationFrame(() => { content.style.opacity = '1'; });
-    }, 500);
-  }, 200);
 }
 
-function showLanding() {
-  const levelModal = document.getElementById('levelModal');
-  const langModal = document.getElementById('langModal');
-  const content = document.getElementById('mainContent');
-
-  content.classList.add('hidden');
-  langModal.classList.add('hidden');
-  levelModal.classList.remove('hidden');
-  levelModal.style.opacity = '0';
-  levelModal.style.transition = 'opacity 0.3s ease';
-  requestAnimationFrame(() => { levelModal.style.opacity = '1'; });
+function applyBranding(level) {
+  const schoolData = schoolMapping[level];
+  const schoolName = schoolData[currentLang];
+  document.querySelectorAll('.school-name-display').forEach(el => el.textContent = schoolName);
+  document.querySelectorAll('.school-logo-display').forEach(el => el.src = schoolData.logo);
 }
 
-function showLangModal() {
-  const modal = document.getElementById('langModal');
-  const content = document.getElementById('mainContent');
-  const levelModal = document.getElementById('levelModal');
-  content.classList.add('hidden');
-  levelModal.classList.add('hidden');
-  modal.classList.remove('hidden');
-  modal.style.opacity = '0';
-  modal.style.transition = 'opacity 0.3s ease';
-  requestAnimationFrame(() => { modal.style.opacity = '1'; });
-}
+
 
 // On load — check saved preferences
 window.addEventListener('DOMContentLoaded', () => {
-  const savedLang = localStorage.getItem('lang') || 'en';
+  applyLanguage();
+  
   const savedLevel = localStorage.getItem('selectedLevel');
-
-  applyLanguage(savedLang);
-
   if (savedLevel) {
-    updateClassOptions(savedLevel);
-    document.getElementById('levelModal').classList.add('hidden');
-    document.getElementById('langModal').classList.add('hidden');
-    const content = document.getElementById('mainContent');
-    content.classList.remove('hidden');
-    content.style.opacity = '1';
-  } else {
-    // Show landing (Level Selection)
-    document.getElementById('levelModal').classList.remove('hidden');
-    document.getElementById('langModal').classList.add('hidden');
-    document.getElementById('mainContent').classList.add('hidden');
+    applyBranding(savedLevel);
   }
+  
   loadDraft();
 });
 
@@ -971,9 +900,6 @@ function showToast(msg, type = 'success') {
   document.body.appendChild(toast);
   setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
 }
-// =============================================
-// 12. INIT
-// =============================================
 window.addEventListener('load', () => {
   updateProgress();
   const sections = document.querySelectorAll('.section-animate');
