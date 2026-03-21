@@ -7,7 +7,7 @@
 // =============================================
 // 1. CONFIG & GOOGLE APP SCRIPT INIT
 // =============================================
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7OULPu1mVDRSpHV296IhlWZXWVmwhwBYvt6El0G2QCc7_v5e2MmCWwxXthipZQIU/exec'; // USER: Replace after deploying GAS
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc6DlGn3m3YTWVyORPzzIudeHkafzawvNnAEN9I0IK8MwyICj2VbjXqfnmPl9t0qkG/exec'; // USER: Replace after deploying GAS
 
 // =============================================
 // 2. TRANSLATIONS (English + Hindi)

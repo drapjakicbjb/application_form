@@ -4,7 +4,7 @@
  */
 
 // 1. CONFIGURATION
-const SPREADSHEET_ID = ''; // Optional: Paste your Sheet ID here if seeing connection errors
+const SPREADSHEET_ID = '1Cn2w-vcr-I8ges2NS8LOCNlzgQWpKvFou1DvLrRJl-I'; // Optional: Paste your Sheet ID here if seeing connection errors
 const FOLDER_ID = '1LF2HEDtvxsRJ6ICbuUDYP9NoRwbn1_y1'; 
 const ADMIN_SHEET = 'Admins';
 const CONFIG_SHEET = 'System_Config';
@@ -131,12 +131,23 @@ function doPost(e) {
     const adb = uploadToDrive(data.aadhaar_back, `${data.student_name}_ab`, data.aadhaar_back_mime);
     const mark = uploadToDrive(data.marksheet, `${data.student_name}_mark`, data.marksheet_mime);
 
-    const row = [
-      id, 'Pending', date, data.school_level || '', data.student_name, data.dob, data.gender, data.religion || '', data.category || '', data.caste || '',
-      data.blood_group || '', data.aadhaar, data.class_applied, data.medium || '', data.stream || '', data.previous_school || '',
-      data.father_name, data.mother_name, data.phone, data.email, data.address, data.city, data.state, data.pincode,
-      photo, adf, adb, mark
-    ];
+    // Map data to row based on APP_HEADERS to prevent shifting
+    const row = APP_HEADERS.map(header => {
+      // Convert header name to lowercase key for mapping (e.g., 'Student Name' -> 'student_name')
+      // Special logic for keys that don't match exactly
+      if (header === 'ID') return id;
+      if (header === 'Status') return 'Pending';
+      if (header === 'Date') return date;
+      if (header === 'School Level') return data.school_level || '';
+      if (header === 'Photo URL') return photo;
+      if (header === 'Aadhaar Front URL') return adf;
+      if (header === 'Aadhaar Back URL') return adb;
+      if (header === 'Marksheet URL') return mark;
+
+      // Generic mapping: "Student Name" -> "student_name"
+      const key = header.toLowerCase().replace(/\s+/g, '_');
+      return data[key] !== undefined ? data[key] : '';
+    });
 
     sheet.appendRow(row);
     return ContentService.createTextOutput(JSON.stringify({ success: true, id: id })).setMimeType(ContentService.MimeType.JSON);
