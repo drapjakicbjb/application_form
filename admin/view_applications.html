@@ -86,7 +86,10 @@
     }
 
     /* Print & Branding Styles */
-    .print-header { display: none; }
+    .print-header {
+      display: none;
+    }
+
     @media print {
       .print-header {
         display: flex !important;
@@ -96,8 +99,19 @@
         border-bottom: 2px solid #1e1b4b;
         margin-bottom: 30px;
       }
-      .print-header img { width: 80px; height: 80px; object-fit: contain; }
-      .print-header h1 { font-size: 24px; font-weight: 800; color: #1e1b4b; margin: 0; }
+
+      .print-header img {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+      }
+
+      .print-header h1 {
+        font-size: 24px;
+        font-weight: 800;
+        color: #1e1b4b;
+        margin: 0;
+      }
     }
 
     .legal-section {
@@ -105,6 +119,7 @@
       padding-top: 30px;
       border-top: 1px solid #e2e8f0;
     }
+
     .consent-text {
       font-size: 11px;
       color: #64748b;
@@ -112,12 +127,14 @@
       line-height: 1.6;
       margin-bottom: 30px;
     }
+
     .signature-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 40px;
       margin-top: 20px;
     }
+
     .sig-line {
       border-top: 1px solid #cbd5e1;
       padding-top: 8px;
@@ -127,6 +144,7 @@
       color: #475569;
       text-align: center;
     }
+
     .verif-box {
       background: #f8fafc;
       padding: 20px;
@@ -134,8 +152,12 @@
       border: 1px solid #e2e8f0;
       margin-top: 30px;
     }
+
     @media print {
-      .verif-box { background: white !important; border: 1px solid #cbd5e1 !important; }
+      .verif-box {
+        background: white !important;
+        border: 1px solid #cbd5e1 !important;
+      }
     }
 
     /* Loader */
@@ -147,10 +169,20 @@
       height: 24px;
       animation: spin 1s linear infinite;
     }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
 
     /* Print Layout Fixes */
     @media print {
+
       /* Hide unnecessary elements */
       aside.admin-sidebar,
       header,
@@ -163,8 +195,9 @@
       }
 
       /* Force container to allow content to flow across pages */
-      html, body, 
-      .flex.h-screen, 
+      html,
+      body,
+      .flex.h-screen,
       .flex-1.flex.flex-col,
       .flex-1.flex.overflow-hidden,
       main {
@@ -177,7 +210,8 @@
         background: white !important;
       }
 
-      #detailsArea, #appDetails {
+      #detailsArea,
+      #appDetails {
         display: block !important;
         overflow: visible !important;
         height: auto !important;
@@ -187,8 +221,8 @@
       }
 
       /* Prevent section clipping/disappearing at page breaks */
-      .bg-white.rounded-2xl.p-6, 
-      .legal-section, 
+      .bg-white.rounded-2xl.p-6,
+      .legal-section,
       .verif-box {
         page-break-inside: avoid !important;
         break-inside: avoid-page !important;
@@ -197,8 +231,15 @@
         overflow: visible !important;
       }
 
-      .shadow-sm, .shadow-lg { box-shadow: none !important; }
-      .rounded-2xl, .rounded-xl { border: 1px solid #e2e8f0 !important; }
+      .shadow-sm,
+      .shadow-lg {
+        box-shadow: none !important;
+      }
+
+      .rounded-2xl,
+      .rounded-xl {
+        border: 1px solid #e2e8f0 !important;
+      }
 
       /* Force student header to stay in a row on print */
       #studentHeader {
@@ -247,7 +288,7 @@
         break-inside: avoid !important;
       }
 
-      .doc-item img, 
+      .doc-item img,
       .doc-item div {
         height: 80px !important;
         width: 80px !important;
@@ -319,14 +360,17 @@
       <header class="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-8 flex-shrink-0">
         <div class="flex items-center gap-4">
           <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Application Manager</h2>
-          <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-md border border-indigo-100 italic">IST Mode Active (+5:30)</span>
+          <span
+            class="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-md border border-indigo-100 italic">IST
+            Mode Active (+5:30)</span>
         </div>
         <div class="flex items-center gap-6">
           <div class="flex flex-col items-end">
             <span id="ist_clock" class="text-sm font-mono font-bold text-slate-700">00:00:00 AM</span>
             <span class="text-[9px] text-slate-400 uppercase tracking-tighter">India Standard Time</span>
           </div>
-          <button id="darkToggle" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-indigo-100 hover:text-indigo-600 transition-colors">
+          <button id="darkToggle"
+            class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-indigo-100 hover:text-indigo-600 transition-colors">
             <i class="fa-solid fa-moon text-xs"></i>
           </button>
         </div>
@@ -334,67 +378,102 @@
 
       <main class="flex-1 flex overflow-hidden">
 
-      <!-- Applications List Sidebar -->
-      <div class="w-80 border-r border-slate-200 bg-white flex flex-col flex-shrink-0">
-        <div class="p-4 border-b border-slate-100 bg-slate-50/50">
-          <h2 class="text-lg font-bold text-slate-800" id="list_title">Applications</h2>
-          <p class="text-xs text-slate-500" id="list_count">Loading...</p>
-        </div>
+        <!-- Applications List Sidebar -->
+        <div class="w-80 border-r border-slate-200 bg-white flex flex-col flex-shrink-0">
+          <div class="p-4 border-b border-slate-100 bg-slate-50/50">
+            <h2 class="text-lg font-bold text-slate-800" id="list_title">Applications</h2>
+            <p class="text-xs text-slate-500 mb-3" id="list_count">Loading...</p>
 
-        <div class="flex-1 overflow-y-auto custom-scrollbar" id="appList">
-          <!-- List items injected here -->
-        </div>
-      </div>
-
-      <!-- Application Details -->
-      <div class="flex-1 overflow-y-auto bg-slate-50 custom-scrollbar" id="detailsArea">
-        <div id="noSelection" class="h-full flex flex-col items-center justify-center p-12 text-slate-400">
-          <div
-            class="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-sm mb-6 border border-slate-100">
-            <i class="fa-solid fa-id-card-clip text-4xl opacity-20"></i>
+            <!-- Search Bar -->
+            <div class="relative">
+              <i
+                class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+              <input type="text" id="appSearch" placeholder="Search by name or ID..."
+                class="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+            </div>
           </div>
-          <h2 class="text-xl font-bold text-slate-800">Select an application</h2>
-          <p class="max-w-xs text-center mt-2 text-sm">Choose an entry from the left sidebar to view the full student
-            profile and documents.</p>
+
+          <div class="flex-1 overflow-y-auto custom-scrollbar" id="appList">
+            <!-- List items injected here -->
+          </div>
         </div>
 
-        <div id="appDetails" class="hidden max-w-4xl mx-auto p-8">
-          <!-- Details injected here -->
+        <!-- Application Details -->
+        <div class="flex-1 overflow-y-auto bg-slate-50 custom-scrollbar" id="detailsArea">
+          <div id="noSelection" class="h-full flex flex-col items-center justify-center p-12 text-slate-400">
+            <div
+              class="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-sm mb-6 border border-slate-100">
+              <i class="fa-solid fa-id-card-clip text-4xl opacity-20"></i>
+            </div>
+            <h2 class="text-xl font-bold text-slate-800">Select an application</h2>
+            <p class="max-w-xs text-center mt-2 text-sm">Choose an entry from the left sidebar to view the full student
+              profile and documents.</p>
+          </div>
+
+          <div id="appDetails" class="hidden max-w-4xl mx-auto p-8">
+            <!-- Details injected here -->
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- FILE PREVIEW MODAL -->
+  <div id="previewModal"
+    class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-5xl h-[90vh] rounded-2xl flex flex-col shadow-2xl relative">
+      <div class="p-4 border-b flex justify-between items-center bg-slate-50 rounded-t-2xl">
+        <h3 id="previewTitle" class="font-bold text-slate-800">Document Preview</h3>
+        <div class="flex gap-2">
+          <a id="previewDownload" href="#" target="_blank"
+            class="p-2 text-slate-500 hover:text-indigo-600 hover:bg-white rounded-lg transition"
+            title="Open in new tab">
+            <i class="fa-solid fa-external-link"></i>
+          </a>
+          <button onclick="closePreview()"
+            class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
         </div>
       </div>
-
-    </main>
-  </div>
-</div>
-
-<!-- FILE PREVIEW MODAL -->
-<div id="previewModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-slate-900/90 backdrop-blur-sm">
-  <div class="bg-white w-full max-w-5xl h-[90vh] rounded-2xl flex flex-col shadow-2xl relative">
-    <div class="p-4 border-b flex justify-between items-center bg-slate-50 rounded-t-2xl">
-      <h3 id="previewTitle" class="font-bold text-slate-800">Document Preview</h3>
-      <div class="flex gap-2">
-        <a id="previewDownload" href="#" target="_blank" class="p-2 text-slate-500 hover:text-indigo-600 hover:bg-white rounded-lg transition" title="Open in new tab">
-          <i class="fa-solid fa-external-link"></i>
-        </a>
-        <button onclick="closePreview()" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
-          <i class="fa-solid fa-xmark text-xl"></i>
-        </button>
-      </div>
-    </div>
-    <div class="flex-1 bg-slate-100 relative">
-      <iframe id="previewFrame" class="w-full h-full border-none" src=""></iframe>
-      <div id="previewLoader" class="absolute inset-0 flex items-center justify-center bg-white">
-        <div class="loader"></div>
+      <div class="flex-1 bg-slate-100 relative">
+        <iframe id="previewFrame" class="w-full h-full border-none" src=""></iframe>
+        <div id="previewLoader" class="absolute inset-0 flex items-center justify-center bg-white">
+          <div class="loader"></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
   <script>
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVz4w18ShRebQeUjKkS2xsYz8AzxoEsNG0Sb0pzWnmgadrJlA6xrySVbLY198gLOyP/exec';
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7OULPu1mVDRSpHV296IhlWZXWVmwhwBYvt6El0G2QCc7_v5e2MmCWwxXthipZQIU/exec';
     const adminUser = localStorage.getItem('admin_user');
     const adminPassword = localStorage.getItem('admin_password');
     let allApplications = [];
+
+    const schoolMapping = {
+      primary: {
+        en: "R.S.Y. Convent School",
+        hi: "आर.एस.वाई. कॉन्वेंट स्कूल",
+        logo: "../assets/img/rsy_logo.png"
+      },
+      middle: {
+        en: "Late Dal Sringari Memorial Balika Junior High School",
+        hi: "स्व. दल श्रृंगारी मेमोरियल बालिका जूनियर हाई स्कूल",
+        logo: "../assets/img/dal_sringari_logo.png"
+      },
+      secondary: {
+        en: "Dr. A.P.J. Abdul Kalam Inter College",
+        hi: "डॉ. ए.पी.जे. अब्दुल कलाम इंटर कॉलेज",
+        logo: "../assets/img/dr logo500.png"
+      },
+      higher_secondary: {
+        en: "Dr. A.P.J. Abdul Kalam Inter College",
+        hi: "डॉ. ए.पी.जे. अब्दुल कलाम इंटर कॉलेज",
+        logo: "../assets/img/dr logo500.png"
+      }
+    };
 
     // IST (+5:30) Time Management
     function formatIST(dateStr) {
@@ -494,6 +573,12 @@
       const urlParams = new URLSearchParams(window.location.search);
       const id = urlParams.get('id');
       const status = urlParams.get('status');
+      const searchQuery = urlParams.get('search');
+
+      if (searchQuery) {
+        const searchInput = document.getElementById('appSearch');
+        if (searchInput) searchInput.value = searchQuery;
+      }
 
       if (status === 'Pending') document.getElementById('nav_pending').classList.add('active'), document.getElementById('nav_all').classList.remove('active');
       else if (status === 'Accepted') document.getElementById('nav_accepted').classList.add('active'), document.getElementById('nav_all').classList.remove('active');
@@ -517,11 +602,21 @@
 
     function loadList(selectedId, statusFilter) {
       const listContainer = document.getElementById('appList');
+      const searchInput = document.getElementById('appSearch');
       let filtered = allApplications;
 
       if (statusFilter) {
         filtered = allApplications.filter(a => a.status === statusFilter);
         document.getElementById('list_title').textContent = statusFilter + ' Applications';
+      }
+
+      // Filter by search query
+      const query = (searchInput.value || '').toLowerCase();
+      if (query) {
+        filtered = filtered.filter(a =>
+          String(a.student_name).toLowerCase().includes(query) ||
+          String(a.id).includes(query)
+        );
       }
 
       document.getElementById('list_count').textContent = filtered.length + ' total submissions';
@@ -531,7 +626,7 @@
         return;
       }
 
-      listContainer.innerHTML = filtered.reverse().map(app => {
+      listContainer.innerHTML = filtered.map(app => {
         const isActive = app.id == selectedId;
         return `
           <a href="view_applications.html?id=${app.id}${statusFilter ? '&status=' + statusFilter : ''}" 
@@ -546,6 +641,12 @@
         `;
       }).join('');
     }
+
+    // Add search listener
+    document.getElementById('appSearch').addEventListener('input', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      loadList(urlParams.get('id'), urlParams.get('status'));
+    });
 
     function loadDetails(id) {
       const detailsArea = document.getElementById('appDetails');
@@ -562,8 +663,8 @@
       // Robust property access helper
       const getVal = (key) => {
         const keys = [
-          key, 
-          key.replace(/_/g, ' '), 
+          key,
+          key.replace(/_/g, ' '),
           key.replace(/ /g, '_'),
           key.toLowerCase(),
           key.toLowerCase().replace(/_/g, ' '),
@@ -578,13 +679,17 @@
 
       const photoUrl = getThumbUrl(getVal('photo_url'));
       const dob = formatIndDate(getVal('dob'));
+      const level = app.school_level || 'primary';
+      const schoolData = schoolMapping[level];
+      const schoolName = schoolData['en'];
+      const schoolLogo = schoolData.logo;
 
       detailsArea.innerHTML = `
         <div class="print-header">
-          <img src="../assets/img/dr logo500.png" alt="School Logo" />
+          <img src="${schoolLogo}" alt="School Logo" />
           <div>
-            <h1>DR. A.P.J. ABDUL KALAM INTER COLLEGE</h1>
-            <p style="font-size: 12px; color: #64748b; margin-top: 4px;">School Admission Management System</p>
+            <h1>${schoolName.toUpperCase()}</h1>
+            <p style="font-size: 12px; color: #64748b; margin-top: 4px;">School Admission Management System | Year 2026-27</p>
           </div>
         </div>
 
@@ -605,7 +710,8 @@
         <div id="studentHeader" class="bg-white border-2 border-slate-200 rounded-2xl p-6 flex flex-row items-center gap-6 shadow-sm">
           ${photoUrl ? `<img src="${photoUrl}" class="w-24 h-24 rounded-xl object-contain border-2 border-slate-100 shadow-sm flex-shrink-0" />` : `<div class="w-24 h-24 rounded-xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-user text-slate-300 text-4xl"></i></div>`}
           <div class="flex-1">
-            <h1 class="text-3xl font-extrabold text-black mb-2">${getVal('student_name')}</h1>
+            <h1 class="text-3xl font-extrabold text-black mb-1">${getVal('student_name')}</h1>
+            <p class="text-sm font-bold text-indigo-600 mb-2">${schoolName}</p>
             <div class="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
               <span class="text-black font-semibold flex items-center"><i class="fa-solid fa-envelope mr-2 text-black text-base"></i> ${getVal('email')}</span>
               <span class="text-black font-semibold flex items-center"><i class="fa-solid fa-phone mr-2 text-black text-base"></i> ${getVal('phone')}</span>
@@ -628,6 +734,12 @@
               <div><p class="text-xs text-slate-400 mb-1">Date of Birth</p><p class="font-medium">${dob}</p></div>
               <div><p class="text-xs text-slate-400 mb-1">Gender</p><p class="font-medium">${getVal('gender')}</p></div>
               <div><p class="text-xs text-slate-400 mb-1">Class Applied</p><p class="font-medium text-indigo-600">${getVal('class_applied')}</p></div>
+              <div class="grid grid-cols-2 gap-2">
+                <div><p class="text-xs text-slate-400 mb-1">Religion</p><p class="font-medium">${getVal('religion') || '—'}</p></div>
+                <div><p class="text-xs text-slate-400 mb-1">Category</p><p class="font-medium">${getVal('category') || '—'}</p></div>
+              </div>
+              <div><p class="text-xs text-slate-400 mb-1">Caste</p><p class="font-medium">${getVal('caste') || '—'}</p></div>
+              ${getVal('medium') ? `<div><p class="text-xs text-slate-400 mb-1">Medium</p><p class="font-medium text-blue-600">${getVal('medium')}</p></div>` : ''}
               ${getVal('stream') ? `<div><p class="text-xs text-slate-400 mb-1">Stream</p><p class="font-medium text-purple-600">${getVal('stream')}</p></div>` : ''}
               <div><p class="text-xs text-slate-400 mb-1">Blood Group</p><p class="font-medium">${getVal('blood_group') || '—'}</p></div>
               <div><p class="text-xs text-slate-400 mb-1">Aadhaar</p><p class="font-medium">XXXX XXXX ${String(getVal('aadhaar')).slice(-4)}</p></div>
@@ -663,7 +775,7 @@
           <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
             <h3 class="text-sm font-bold text-slate-800 uppercase tracking-widest mb-4 flex items-center"><span class="w-2 h-2 bg-slate-400 rounded-full mr-2"></span> Parent/Guardian Consent</h3>
             <p class="consent-text">
-              I hereby declare that all the information provided in this admission form is true and correct to the best of my knowledge and belief. I understand that any false statement or omission may lead to the cancellation of my ward's admission. I agree to abide by the rules and regulations of Dr. A.P.J. Abdul Kalam Inter College.
+              I hereby declare that all the information provided in this admission form is true and correct to the best of my knowledge and belief. I understand that any false statement or omission may lead to the cancellation of my ward's admission. I agree to abide by the rules and regulations of <b>${schoolName}</b>.
             </p>
             <div class="signature-grid">
               <div class="sig-line">Parent/Guardian Signature</div>
@@ -691,7 +803,7 @@
         for (const k of keys) if (app[k] !== undefined && app[k] !== null && app[k] !== '') return app[k];
         return '';
       };
-      
+
       const url = getVal(field);
       const isImg = field === 'photo_url' || label.toLowerCase().includes('photo') || label.toLowerCase().includes('aadhaar');
 

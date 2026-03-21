@@ -7,11 +7,38 @@
 // =============================================
 // 1. CONFIG & GOOGLE APP SCRIPT INIT
 // =============================================
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVz4w18ShRebQeUjKkS2xsYz8AzxoEsNG0Sb0pzWnmgadrJlA6xrySVbLY198gLOyP/exec'; // USER: Replace after deploying GAS
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7OULPu1mVDRSpHV296IhlWZXWVmwhwBYvt6El0G2QCc7_v5e2MmCWwxXthipZQIU/exec'; // USER: Replace after deploying GAS
 
 // =============================================
 // 2. TRANSLATIONS (English + Hindi)
 // =============================================
+const schoolMapping = {
+  primary: {
+    en: "R.S.Y. Convent School",
+    hi: "आर.एस.वाई. कॉन्वेंट स्कूल",
+    levels: "Nursery - Class 5",
+    logo: "assets/img/rsy_logo.png"
+  },
+  middle: {
+    en: "Late Dal Sringari Memorial Balika Junior High School",
+    hi: "स्व. दल श्रृंगारी मेमोरियल बालिका जूनियर हाई स्कूल",
+    levels: "Class 6 - Class 8",
+    logo: "assets/img/dal_sringari_logo.png"
+  },
+  secondary: {
+    en: "Dr. A.P.J. Abdul Kalam Inter College",
+    hi: "डॉ. ए.पी.जे. अब्दुल कलाम इंटर कॉलेज",
+    levels: "Class 9 - Class 10",
+    logo: "assets/img/dr logo500.png"
+  },
+  higher_secondary: {
+    en: "Dr. A.P.J. Abdul Kalam Inter College",
+    hi: "डॉ. ए.पी.जे. अब्दुल कलाम इंटर कॉलेज",
+    levels: "Class 11 - Class 12",
+    logo: "assets/img/dr logo500.png"
+  }
+};
+
 const translations = {
   en: {
     // Header
@@ -49,6 +76,31 @@ const translations = {
     'f.city': 'City',
     'f.state': 'State',
     'f.pincode': 'Pincode',
+    'f.religion': 'Religion',
+    'f.category': 'Category',
+    'f.caste': 'Caste',
+    // ... rest
+    'opt.religion_def': 'Select Religion',
+    'opt.category_def': 'Select Category',
+    'p.caste': 'Enter your caste (e.g. Brahmin, Jat, etc.)',
+    'opt.hindu': 'Hindu',
+    'opt.muslim': 'Muslim',
+    'opt.sikh': 'Sikh',
+    'opt.christian': 'Christian',
+    'opt.other_rel': 'Others',
+    'opt.general': 'General',
+    'opt.obc': 'OBC',
+    'opt.sc': 'SC',
+    'opt.st': 'ST',
+    // Selection screen
+    'select.title': 'Select Academic Level',
+    'select.sub': 'Choose the school level you wish to apply for',
+    'level.primary': 'Primary School',
+    'level.middle': 'Middle School',
+    'level.secondary': 'Secondary School',
+    'level.higher': 'Higher Secondary',
+    'address.global': 'Belwariya Jungle, Basti, U.P.- 272161',
+    // ... existing
     // Section 3
     's3.title': 'Document Upload',
     's3.sub': 'Max 1 MB per file · JPG, PNG, PDF',
@@ -79,6 +131,7 @@ const translations = {
     'loading': 'Submitting Application…',
     // Placeholders
     'p.student_name': "Enter student's full name",
+    'p.category_def': 'Select your category',
     'p.aadhaar': '12-digit Aadhaar number',
     'p.previous_school': 'Name of previous school (if any)',
     'p.father_name': "Father's full name",
@@ -89,6 +142,10 @@ const translations = {
     'p.pincode': '6-digit pincode',
     // Validation errors
     'f.stream': 'Stream',
+    'f.medium': 'Medium of Education',
+    'opt.medium_def': 'Select Medium',
+    'opt.m_hindi': 'Hindi',
+    'opt.m_english': 'English',
     'opt.stream_def': 'Select Stream',
     'opt.maths': 'Maths',
     'opt.home_sci': 'Home Science',
@@ -117,6 +174,11 @@ const translations = {
     'err.af_req': 'Aadhaar front side is required.',
     'err.ab_req': 'Aadhaar back side is required.',
     'err.decl_req': 'Please accept the declaration.',
+    'err.religion_req': 'Please select religion.',
+    'err.category_req': 'Please select category.',
+    'err.caste_req': 'Please enter your caste.',
+    'err.ps_req': 'Previous school name is required for chosen class.',
+    'err.medium_req': 'Please select medium of education.',
     'toast.saved': 'Draft saved!',
   },
   hi: {
@@ -155,6 +217,29 @@ const translations = {
     'f.city': 'शहर',
     'f.state': 'राज्य',
     'f.pincode': 'पिनकोड',
+    'f.religion': 'धर्म',
+    'f.category': 'श्रेणी (Category)',
+    'f.caste': 'जाति (Caste)',
+    'opt.religion_def': 'धर्म चुनें',
+    'opt.category_def': 'श्रेणी चुनें',
+    'p.caste': 'अपनी जाति दर्ज करें (जैसे: ब्राह्मण, जाट, आदि)',
+    'opt.hindu': 'हिंदू',
+    'opt.muslim': 'मुस्लिम',
+    'opt.sikh': 'सिख',
+    'opt.christian': 'ईसाई',
+    'opt.other_rel': 'अन्य',
+    'opt.general': 'सामान्य',
+    'opt.obc': 'ओबीसी',
+    'opt.sc': 'एससी',
+    'opt.st': 'एसटी',
+    // Selection screen
+    'select.title': 'शैक्षणिक स्तर चुनें',
+    'select.sub': 'उस विद्यालय स्तर का चयन करें जिसके लिए आप आवेदन करना चाहते हैं',
+    'level.primary': 'प्राइमरी स्कूल',
+    'level.middle': 'मिडल स्कूल',
+    'level.secondary': 'सेकेंडरी स्कूल',
+    'level.higher': 'हायर सेकेंडरी',
+    'address.global': 'बेलवरिया जंगल, बस्ती, यू.पी.- 272161',
     // Section 3
     's3.title': 'दस्तावेज़ अपलोड',
     's3.sub': 'प्रति फ़ाइल अधिकतम 1 MB · JPG, PNG, PDF',
@@ -195,6 +280,10 @@ const translations = {
     'p.pincode': '6 अंकों का पिनकोड',
     // Validation errors
     'f.stream': 'स्ट्रीम',
+    'f.medium': 'शिक्षा का माध्यम',
+    'opt.medium_def': 'माध्यम चुनें',
+    'opt.m_hindi': 'हिंदी',
+    'opt.m_english': 'अंग्रेज़ी',
     'opt.stream_def': 'स्ट्रीम चुनें',
     'opt.maths': 'गणित',
     'opt.home_sci': 'गृह विज्ञान',
@@ -223,12 +312,20 @@ const translations = {
     'err.af_req': 'आधार कार्ड (आगे) आवश्यक है।',
     'err.ab_req': 'आधार कार्ड (पीछे) आवश्यक है।',
     'err.decl_req': 'कृपया घोषणा स्वीकार करें।',
+    'err.religion_req': 'कृपया धर्म चुनें।',
+    'err.category_req': 'कृपया श्रेणी चुनें।',
+    'err.caste_req': 'कृपया अपनी जाति दर्ज करें।',
+    'err.ps_req': 'चुनी हुई कक्षा के लिए पिछले स्कूल का नाम आवश्यक है।',
+    'err.medium_req': 'कृपया शिक्षा का माध्यम चुनें।',
     'toast.saved': 'मसौदा सहेजा गया!',
   }
 };
 
 // Active language
 let currentLang = 'en';
+// Load saved or default
+if (!localStorage.getItem('lang')) localStorage.setItem('lang', 'en');
+currentLang = localStorage.getItem('lang') || 'en';
 
 // Translate helper
 function t(key) {
@@ -249,6 +346,15 @@ function applyLanguage(lang) {
     if (val) el.textContent = val;
   });
 
+  const selectedLevel = localStorage.getItem('selectedLevel') || 'primary';
+  const schoolData = schoolMapping[selectedLevel];
+  const schoolName = schoolData[currentLang];
+  document.querySelectorAll('.school-name-display').forEach(el => el.textContent = schoolName);
+
+  // Logo update
+  const logoPath = schoolData.logo;
+  document.querySelectorAll('.school-logo-display').forEach(el => el.src = logoPath);
+
   // Placeholders
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
     const key = el.getAttribute('data-i18n-placeholder');
@@ -256,7 +362,7 @@ function applyLanguage(lang) {
     if (val) el.placeholder = val;
   });
 
-  // Update select option text nodes (first option only — defaults)
+  // Update select option text nodes
   document.querySelectorAll('option[data-i18n]').forEach(opt => {
     const key = opt.getAttribute('data-i18n');
     const val = t(key);
@@ -274,8 +380,53 @@ function applyLanguage(lang) {
 }
 
 // =============================================
-// 3. LANGUAGE MODAL LOGIC
+// 3. LANDING & SELECTION LOGIC
 // =============================================
+function selectLevel(level) {
+  localStorage.setItem('selectedLevel', level);
+  const schoolName = schoolMapping[level][currentLang];
+  document.querySelectorAll('.school-name-display').forEach(el => el.textContent = schoolName);
+
+  // Update class options based on level
+  updateClassOptions(level);
+
+  const levelModal = document.getElementById('levelModal');
+  const langModal = document.getElementById('langModal');
+
+  levelModal.style.transition = 'opacity 0.5s ease';
+  levelModal.style.opacity = '0';
+  setTimeout(() => {
+    levelModal.classList.add('hidden');
+
+    // Go directly to content (English by default or saved)
+    const content = document.getElementById('mainContent');
+    applyLanguage(currentLang);
+    content.classList.remove('hidden');
+    content.style.opacity = '0';
+    content.style.transition = 'opacity 0.4s ease';
+    requestAnimationFrame(() => { content.style.opacity = '1'; });
+  }, 500);
+}
+
+function updateClassOptions(level) {
+  const classSel = document.getElementById('class_applied');
+  if (!classSel) return;
+
+  let classes = [];
+  if (level === 'primary') classes = ['Nursery', 'LKG', 'UKG', 'Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5'];
+  else if (level === 'middle') classes = ['Class 6', 'Class 7', 'Class 8'];
+  else if (level === 'secondary') classes = ['Class 9', 'Class 10'];
+  else if (level === 'higher_secondary') classes = ['Class 11', 'Class 12'];
+
+  classSel.innerHTML = `<option value="" data-i18n="opt.class_def">${t('opt.class_def')}</option>`;
+  classes.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = c;
+    classSel.appendChild(opt);
+  });
+}
+
 function selectLanguage(lang) {
   // Animate chosen card
   const card = document.getElementById('card_' + lang);
@@ -300,24 +451,51 @@ function selectLanguage(lang) {
   }, 200);
 }
 
+function showLanding() {
+  const levelModal = document.getElementById('levelModal');
+  const langModal = document.getElementById('langModal');
+  const content = document.getElementById('mainContent');
+
+  content.classList.add('hidden');
+  langModal.classList.add('hidden');
+  levelModal.classList.remove('hidden');
+  levelModal.style.opacity = '0';
+  levelModal.style.transition = 'opacity 0.3s ease';
+  requestAnimationFrame(() => { levelModal.style.opacity = '1'; });
+}
+
 function showLangModal() {
   const modal = document.getElementById('langModal');
   const content = document.getElementById('mainContent');
+  const levelModal = document.getElementById('levelModal');
   content.classList.add('hidden');
+  levelModal.classList.add('hidden');
   modal.classList.remove('hidden');
   modal.style.opacity = '0';
   modal.style.transition = 'opacity 0.3s ease';
   requestAnimationFrame(() => { modal.style.opacity = '1'; });
 }
 
-// On load — check saved language preference
+// On load — check saved preferences
 window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('lang');
-  if (saved === 'en' || saved === 'hi') {
-    // Skip modal, go directly
-    selectLanguage(saved);
+  const savedLang = localStorage.getItem('lang') || 'en';
+  const savedLevel = localStorage.getItem('selectedLevel');
+
+  applyLanguage(savedLang);
+
+  if (savedLevel) {
+    updateClassOptions(savedLevel);
+    document.getElementById('levelModal').classList.add('hidden');
+    document.getElementById('langModal').classList.add('hidden');
+    const content = document.getElementById('mainContent');
+    content.classList.remove('hidden');
+    content.style.opacity = '1';
+  } else {
+    // Show landing (Level Selection)
+    document.getElementById('levelModal').classList.remove('hidden');
+    document.getElementById('langModal').classList.add('hidden');
+    document.getElementById('mainContent').classList.add('hidden');
   }
-  // Otherwise modal stays visible
   loadDraft();
 });
 
@@ -342,7 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // =============================================
 const AUTO_SAVE_KEY = 'admission_form_draft';
 const SAVE_FIELDS = [
-  'student_name', 'dob', 'gender', 'blood_group', 'aadhaar', 'class_applied', 'stream', 'previous_school',
+  'student_name', 'dob', 'gender', 'blood_group', 'religion', 'category', 'caste', 'aadhaar', 'class_applied', 'medium', 'stream', 'previous_school',
   'father_name', 'mother_name', 'phone', 'email', 'address', 'city', 'state', 'pincode'
 ];
 
@@ -393,8 +571,31 @@ function updateStreamDropdown() {
   const cls = (document.getElementById('class_applied')?.value || '').trim();
   const group = document.getElementById('stream_group');
   const streamSel = document.getElementById('stream');
-  if (!group || !streamSel) return;
+  const mediumGroup = document.getElementById('medium_group');
+  const mediumSel = document.getElementById('medium');
+  const prevSchoolLabel = document.querySelector('label[for="previous_school"] .text-red-500');
+  if (!group || !streamSel || !mediumGroup || !mediumSel) return;
 
+  // Previous School logic: Class 2+
+  const nonMandatoryClasses = ['Nursery', 'LKG', 'UKG', 'Class 1'];
+  const isMandatoryClass = cls && !nonMandatoryClasses.includes(cls);
+  if (prevSchoolLabel) {
+    if (isMandatoryClass) prevSchoolLabel.classList.remove('hidden');
+    else prevSchoolLabel.classList.add('hidden');
+  }
+
+  // Medium logic: 6-12
+  const showMedium = ['Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'].includes(cls);
+  if (showMedium) {
+    mediumGroup.style.display = '';
+    mediumSel.required = true;
+  } else {
+    mediumGroup.style.display = 'none';
+    mediumSel.value = '';
+    mediumSel.required = false;
+  }
+
+  // Stream logic: 9-12
   let options = null;
   if (cls === 'Class 9' || cls === 'Class 10') options = STREAMS['910'];
   if (cls === 'Class 11' || cls === 'Class 12') options = STREAMS['1112'];
@@ -437,10 +638,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // 7. PROGRESS BAR
 // =============================================
 const ALL_REQUIRED = [
-  'student_name', 'dob', 'gender', 'aadhaar', 'class_applied',
+  'student_name', 'dob', 'gender', 'religion', 'category', 'caste', 'aadhaar', 'class_applied',
   'father_name', 'mother_name', 'phone', 'email', 'address', 'city', 'state', 'pincode',
   'photo', 'aadhaar_front', 'aadhaar_back', 'declaration'
 ];
+// Note: medium and stream are handled conditionally in validation
 
 function updateProgress() {
   const progressBar = document.getElementById('progressBar');
@@ -578,14 +780,32 @@ function validateForm() {
   else if (new Date(dob.value) > new Date()) { showError('dob', t('err.dob_future')); valid = false; }
   else clearError('dob');
   req('gender', 'err.gender_req');
+  req('religion', 'err.religion_req');
+  req('category', 'err.category_req');
+  req('caste', 'err.caste_req');
+
   const aadhaar = document.getElementById('aadhaar');
   if (!aadhaar.value.trim()) { showError('aadhaar', t('err.aadhaar_req')); valid = false; }
   else if (!/^\d{12}$/.test(aadhaar.value.trim())) { showError('aadhaar', t('err.aadhaar_fmt')); valid = false; }
   else clearError('aadhaar');
+
+  const cls = (document.getElementById('class_applied')?.value || '');
   req('class_applied', 'err.class_req');
 
+  // Medium logic: 6-12
+  const isSixToTwelve = ['Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12'].includes(cls);
+  if (isSixToTwelve) {
+    req('medium', 'err.medium_req');
+  }
+
+  // Previous School (Mandatory for Class 2+)
+  const nonMandatoryClasses = ['Nursery', 'LKG', 'UKG', 'Class 1'];
+  const isMandatoryClass = cls && !nonMandatoryClasses.includes(cls);
+  if (isMandatoryClass) {
+    req('previous_school', 'err.ps_req');
+  }
+
   // Stream (only required for Class 9-12)
-  const cls = (document.getElementById('class_applied')?.value || '');
   if (['Class 9', 'Class 10', 'Class 11', 'Class 12'].includes(cls)) {
     const streamEl = document.getElementById('stream');
     if (!streamEl || !streamEl.value) { showError('stream', t('err.stream_req')); valid = false; }
@@ -671,6 +891,7 @@ document.addEventListener('DOMContentLoaded', () => {
           data[key] = value;
         }
       });
+      data['school_level'] = localStorage.getItem('selectedLevel') || 'primary';
 
       // Handle Files — Convert to Base64 (to match existing DB logic)
       const filePromises = [];
@@ -701,7 +922,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       const result = await response.json();
-      
+
       if (!result.success) {
         throw new Error(result.message || 'Unknown server error');
       }

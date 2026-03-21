@@ -74,9 +74,77 @@
   class="font-inter min-h-screen transition-colors duration-300 bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 
   <!-- =====================================================
+     LEVEL SELECTOR MODAL (Home Page 4 Sections)
+     ===================================================== -->
+  <div id="levelModal" class="fixed inset-0 z-[110] flex items-center justify-center p-4"
+    style="background: linear-gradient(135deg,#0f172a 0%,#1e1b4b 40%,#312e81 100%);">
+    
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute w-96 h-96 rounded-full bg-blue-500/10 -top-20 -left-20 blur-3xl animate-pulse"></div>
+      <div class="absolute w-96 h-96 rounded-full bg-purple-500/10 -bottom-20 -right-20 blur-3xl animate-pulse"></div>
+    </div>
+
+    <div class="relative z-10 text-center max-w-5xl w-full">
+      <h1 class="text-3xl md:text-5xl font-extrabold text-white mb-2" data-i18n="select.title">Select Academic Level</h1>
+      <p class="text-indigo-200 text-lg mb-12 font-medium" data-i18n="select.sub">Choose the school level you wish to apply for</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Primary -->
+        <button onclick="selectLevel('primary')" class="lang-card group p-8 rounded-[2.5rem] bg-white/10 backdrop-blur-xl border border-white/20 hover:border-blue-400/50 flex flex-col items-center text-center transition-all duration-500 hover:shadow-[0_20px_50px_rgba(59,130,246,0.2)]">
+          <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-child-reaching text-4xl text-white"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2" data-i18n="level.primary">Primary School</h3>
+          <p class="text-indigo-300 text-sm mb-4">Nursery - Class 5</p>
+          <div class="text-xs font-bold text-blue-400 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Select Level</div>
+        </button>
+
+        <!-- Middle -->
+        <button onclick="selectLevel('middle')" class="lang-card group p-8 rounded-[2.5rem] bg-white/10 backdrop-blur-xl border border-white/20 hover:border-emerald-400/50 flex flex-col items-center text-center transition-all duration-500 hover:shadow-[0_20px_50px_rgba(52,211,153,0.2)]">
+          <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-400 to-teal-600 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-graduation-cap text-4xl text-white"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2" data-i18n="level.middle">Middle School</h3>
+          <p class="text-emerald-300 text-sm mb-4">Class 6 - Class 8</p>
+          <div class="text-xs font-bold text-emerald-400 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Select Level</div>
+        </button>
+
+        <!-- Secondary -->
+        <button onclick="selectLevel('secondary')" class="lang-card group p-8 rounded-[2.5rem] bg-white/10 backdrop-blur-xl border border-white/20 hover:border-orange-400/50 flex flex-col items-center text-center transition-all duration-500 hover:shadow-[0_20px_50px_rgba(251,146,60,0.2)]">
+          <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-orange-400 to-pink-600 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-book-open-reader text-4xl text-white"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2" data-i18n="level.secondary">Secondary School</h3>
+          <p class="text-orange-300 text-sm mb-4">Class 9 - Class 10</p>
+          <div class="text-xs font-bold text-orange-400 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Select Level</div>
+        </button>
+
+        <!-- Higher Secondary -->
+        <button onclick="selectLevel('higher_secondary')" class="lang-card group p-8 rounded-[2.5rem] bg-white/10 backdrop-blur-xl border border-white/20 hover:border-purple-400/50 flex flex-col items-center text-center transition-all duration-500 hover:shadow-[0_20px_50px_rgba(168,85,247,0.2)]">
+          <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-400 to-indigo-800 flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform">
+            <i class="fa-solid fa-university text-4xl text-white"></i>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-2" data-i18n="level.higher">Higher Secondary</h3>
+          <p class="text-purple-300 text-sm mb-4">Class 11 - Class 12</p>
+          <div class="text-xs font-bold text-purple-400 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Select Level</div>
+        </button>
+
+      </div>
+
+      <div class="mt-16 flex items-center justify-center gap-6">
+        <div class="flex items-center gap-2 text-indigo-400 text-sm">
+          <i class="fa-solid fa-location-dot"></i>
+          <span data-i18n="address.global">Belwariya Jungle, Basti, U.P.- 272161</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
      LANGUAGE SELECTOR MODAL
      ===================================================== -->
-  <div id="langModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4"
+  <div id="langModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4"
     style="background: linear-gradient(135deg,#1e1b4b 0%,#312e81 40%,#4c1d95 70%,#1e1b4b 100%);">
 
     <!-- Particle dots (CSS only) -->
@@ -89,7 +157,7 @@
     <div class="relative z-10 text-center max-w-2xl w-full">
       <!-- School logo / icon -->
       <div class="w-24 h-24 mx-auto mb-6 drop-shadow-2xl">
-        <img src="assets/img/dr logo500.png" alt="School Logo" class="w-full h-full object-contain" />
+        <img src="assets/img/dr logo500.png" alt="School Logo" class="w-full h-full object-contain school-logo-display" />
       </div>
 
       <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-1">School Admission Portal</h1>
@@ -154,16 +222,23 @@
       <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-3">
           <div class="w-12 h-12 drop-shadow-lg">
-            <img src="assets/img/dr logo500.png" alt="School Logo" class="w-full h-full object-contain" />
+            <img src="assets/img/dr logo500.png" alt="School Logo" class="w-full h-full object-contain school-logo-display" />
           </div>
           <div>
-            <h1 class="text-lg font-bold text-gray-800 dark:text-white leading-tight" data-i18n="header.title">School
+            <h1 class="text-lg font-bold text-gray-800 dark:text-white leading-tight school-name-display" data-i18n="header.title">School
               Admission Portal</h1>
             <p class="text-xs text-indigo-500 dark:text-indigo-400 font-medium" data-i18n="header.year">Academic Year
               2026–26</p>
           </div>
         </div>
         <div class="flex items-center gap-3">
+          <!-- Level Selection Toggle -->
+          <button onclick="showLanding()"
+            class="hidden md:flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
+            <i class="fa-solid fa-school"></i>
+            <span data-i18n="btn.change_level">Change Level</span>
+          </button>
+          
           <!-- Language switcher -->
           <button id="langSwitchBtn" onclick="showLangModal()"
             class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border border-indigo-300/60 dark:border-indigo-600/60 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-all">
@@ -191,7 +266,7 @@
         <i class="fa-solid fa-circle-check mr-1"></i>
         <span data-i18n="hero.badge">Admissions Open</span>
       </div>
-      <h2 class="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-white mb-3" data-i18n="hero.title">Apply
+      <h2 class="text-4xl md:text-5xl font-extrabold text-gray-800 dark:text-white mb-3 school-name-display" data-i18n="hero.title">Apply
         for Admission</h2>
       <p class="text-gray-500 dark:text-gray-400 text-lg max-w-xl mx-auto">
         <span data-i18n="hero.subtitle">Fill out the form below carefully. All fields marked</span>
@@ -319,6 +394,53 @@
               </div>
             </div>
 
+            <!-- Religion -->
+            <div class="form-group">
+              <label class="form-label" for="religion"><span data-i18n="f.religion">Religion</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-hands-praying input-icon"></i>
+                <select id="religion" name="religion" class="form-input form-select" required>
+                  <option value="" data-i18n="opt.religion_def">Select Religion</option>
+                  <option value="Hindu" data-i18n="opt.hindu">Hindu</option>
+                  <option value="Muslim" data-i18n="opt.muslim">Muslim</option>
+                  <option value="Sikh" data-i18n="opt.sikh">Sikh</option>
+                  <option value="Christian" data-i18n="opt.christian">Christian</option>
+                  <option value="Other" data-i18n="opt.other_rel">Other</option>
+                </select>
+              </div>
+              <span class="error-msg" id="err_religion"></span>
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+              <label class="form-label" for="category"><span data-i18n="f.category">Category</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-layer-group input-icon"></i>
+                <select id="category" name="category" class="form-input form-select" required>
+                  <option value="" data-i18n="opt.category_def">Select Category</option>
+                  <option value="General" data-i18n="opt.general">General</option>
+                  <option value="OBC" data-i18n="opt.obc">OBC</option>
+                  <option value="SC" data-i18n="opt.sc">SC</option>
+                  <option value="ST" data-i18n="opt.st">ST</option>
+                </select>
+              </div>
+              <span class="error-msg" id="err_category"></span>
+            </div>
+
+            <!-- Caste -->
+            <div class="form-group">
+              <label class="form-label" for="caste"><span data-i18n="f.caste">Caste</span> <span
+                  class="text-red-500">*</span></label>
+              <div class="input-wrapper">
+                <i class="fa-solid fa-users-line input-icon"></i>
+                <input type="text" id="caste" name="caste" class="form-input" data-i18n-placeholder="p.caste"
+                  placeholder="Enter your caste" required />
+              </div>
+              <span class="error-msg" id="err_caste"></span>
+            </div>
+
             <!-- Aadhaar Number -->
             <div class="form-group">
               <label class="form-label" for="aadhaar"><span data-i18n="f.aadhaar">Aadhaar Number</span> <span
@@ -338,28 +460,28 @@
               <div class="input-wrapper">
                 <i class="fa-solid fa-school input-icon"></i>
                 <select id="class_applied" name="class_applied" class="form-input form-select" required>
-                  <option value="" data-i18n="opt.class_def">Select Class</option>
-                  <option>Nursery</option>
-                  <option>LKG</option>
-                  <option>UKG</option>
-                  <option>Class 1</option>
-                  <option>Class 2</option>
-                  <option>Class 3</option>
-                  <option>Class 4</option>
-                  <option>Class 5</option>
-                  <option>Class 6</option>
-                  <option>Class 7</option>
-                  <option>Class 8</option>
-                  <option>Class 9</option>
-                  <option>Class 10</option>
-                  <option>Class 11</option>
                   <option>Class 12</option>
                 </select>
               </div>
               <span class="error-msg" id="err_class_applied"></span>
             </div>
 
-            <!-- Stream (shown for Class 9-12 only) -->
+            <!-- Medium of Education (Conditional for 6-12) -->
+          <div id="medium_group" class="col-span-1" style="display: none;">
+            <label class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
+              <i class="fa-solid fa-language text-indigo-500 mr-2"></i>
+              <span data-i18n="f.medium">Medium of Education</span> <span class="text-red-500">*</span>
+            </label>
+            <select id="medium" name="medium"
+              class="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all outline-none">
+              <option value="" data-i18n="opt.medium_def">Select Medium</option>
+              <option value="Hindi" data-i18n="opt.m_hindi">Hindi</option>
+              <option value="English" data-i18n="opt.m_english">English</option>
+            </select>
+            <span id="err_medium" class="text-[10px] text-red-500 mt-1 hidden font-semibold uppercase tracking-wider"></span>
+          </div>
+
+          <!-- Stream (shown for Class 9-12 only) -->
             <div class="form-group" id="stream_group" style="display:none; transition: all 0.3s ease;">
               <label class="form-label" for="stream">
                 <span data-i18n="f.stream">Stream</span> <span class="text-red-500">*</span>

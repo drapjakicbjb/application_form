@@ -182,101 +182,109 @@
     <div class="flex-1 flex flex-col overflow-hidden">
       <!-- Top Bar -->
       <header class="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-8 flex-shrink-0">
-        <div class="flex items-center gap-4">
-          <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Dashboard</h2>
-          <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-md border border-indigo-100 italic">IST Mode Active (+5:30)</span>
+        <div class="flex items-center gap-4 flex-1">
+          <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider hidden lg:block">Dashboard</h2>
+
+          <!-- Global Search -->
+          <div class="relative w-full max-w-md">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+            <input type="text" id="globalSearch" placeholder="Find a student by name or ID..."
+              class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+              onkeydown="if(event.key==='Enter') window.location.href='view_applications.html?search='+this.value">
+          </div>
         </div>
         <div class="flex items-center gap-6">
           <div class="flex flex-col items-end">
             <span id="ist_clock" class="text-sm font-mono font-bold text-slate-700">00:00:00 AM</span>
             <span class="text-[9px] text-slate-400 uppercase tracking-tighter">India Standard Time</span>
           </div>
-          <button id="darkToggle" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-indigo-100 hover:text-indigo-600 transition-colors">
+          <button id="darkToggle"
+            class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-indigo-100 hover:text-indigo-600 transition-colors">
             <i class="fa-solid fa-moon text-xs"></i>
           </button>
         </div>
       </header>
 
       <main class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar">
-      <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-30">
-        <div>
-          <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
-          <p class="text-xs text-gray-400">Welcome back, <span id="admin_name">Admin</span></p>
-        </div>
-        <div class="flex items-center gap-3">
-          <span class="text-xs bg-green-100 text-green-700 font-semibold px-3 py-1 rounded-full">
-            <i class="fa-solid fa-circle text-xs mr-1"></i> Online
-          </span>
-        </div>
-      </header>
+        <header class="bg-white shadow-sm px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+          <div>
+            <h2 class="text-xl font-bold text-gray-800">Dashboard</h2>
+            <p class="text-xs text-gray-400">Welcome back, <span id="admin_name">Admin</span></p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-xs bg-green-100 text-green-700 font-semibold px-3 py-1 rounded-full">
+              <i class="fa-solid fa-circle text-xs mr-1"></i> Online
+            </span>
+          </div>
+        </header>
 
-      <main class="p-6 space-y-6">
-        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
-          <div class="stat-card" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
-            <div>
-              <p class="text-indigo-200 text-xs font-semibold uppercase tracking-wider">Total Applications</p>
-              <p class="text-4xl font-extrabold mt-1" id="stat_total">0</p>
+        <main class="p-6 space-y-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+            <div class="stat-card" style="background:linear-gradient(135deg,#6366f1,#8b5cf6)">
+              <div>
+                <p class="text-indigo-200 text-xs font-semibold uppercase tracking-wider">Total Applications</p>
+                <p class="text-4xl font-extrabold mt-1" id="stat_total">0</p>
+              </div>
+              <div class="stat-icon"><i class="fa-solid fa-file-lines"></i></div>
             </div>
-            <div class="stat-icon"><i class="fa-solid fa-file-lines"></i></div>
-          </div>
-          <div class="stat-card" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
-            <div>
-              <p class="text-amber-100 text-xs font-semibold uppercase tracking-wider">Pending Review</p>
-              <p class="text-4xl font-extrabold mt-1" id="stat_pending">0</p>
+            <div class="stat-card" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+              <div>
+                <p class="text-amber-100 text-xs font-semibold uppercase tracking-wider">Pending Review</p>
+                <p class="text-4xl font-extrabold mt-1" id="stat_pending">0</p>
+              </div>
+              <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
             </div>
-            <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
-          </div>
-          <div class="stat-card" style="background:linear-gradient(135deg,#10b981,#059669)">
-            <div>
-              <p class="text-emerald-100 text-xs font-semibold uppercase tracking-wider">Accepted</p>
-              <p class="text-4xl font-extrabold mt-1" id="stat_accepted">0</p>
+            <div class="stat-card" style="background:linear-gradient(135deg,#10b981,#059669)">
+              <div>
+                <p class="text-emerald-100 text-xs font-semibold uppercase tracking-wider">Accepted</p>
+                <p class="text-4xl font-extrabold mt-1" id="stat_accepted">0</p>
+              </div>
+              <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
             </div>
-            <div class="stat-icon"><i class="fa-solid fa-circle-check"></i></div>
-          </div>
-          <div class="stat-card" style="background:linear-gradient(135deg,#ec4899,#be185d)">
-            <div>
-              <p class="text-pink-100 text-xs font-semibold uppercase tracking-wider">Today</p>
-              <p class="text-4xl font-extrabold mt-1" id="stat_today">0</p>
+            <div class="stat-card" style="background:linear-gradient(135deg,#ec4899,#be185d)">
+              <div>
+                <p class="text-pink-100 text-xs font-semibold uppercase tracking-wider">Today</p>
+                <p class="text-4xl font-extrabold mt-1" id="stat_today">0</p>
+              </div>
+              <div class="stat-icon"><i class="fa-solid fa-calendar-day"></i></div>
             </div>
-            <div class="stat-icon"><i class="fa-solid fa-calendar-day"></i></div>
           </div>
-        </div>
 
-        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100">
-          <div class="px-6 py-4 border-b flex items-center justify-between">
-            <h3 class="font-bold text-gray-700 flex items-center gap-2">
-              <i class="fa-solid fa-clock-rotate-left text-indigo-500"></i> Recent Applications
-            </h3>
-            <a href="view_applications.html" class="text-xs text-indigo-600 hover:underline font-semibold">View All
-              →</a>
+          <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-slate-100">
+            <div class="px-6 py-4 border-b flex items-center justify-between">
+              <h3 class="font-bold text-gray-700 flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-indigo-500"></i> Recent Applications
+              </h3>
+              <a href="view_applications.html" class="text-xs text-indigo-600 hover:underline font-semibold">View All
+                →</a>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#ID</th>
+                    <th>Student Name</th>
+                    <th>Class</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="recentTable">
+                  <tr>
+                    <td colspan="7" class="text-center text-gray-400 py-12">Loading...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div class="overflow-x-auto">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>#ID</th>
-                  <th>Student Name</th>
-                  <th>Class</th>
-                  <th>Phone</th>
-                  <th>Status</th>
-                  <th>Date</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="recentTable">
-                <tr>
-                  <td colspan="7" class="text-center text-gray-400 py-12">Loading...</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </main>
+        </main>
     </div>
   </div>
 
   <script>
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVz4w18ShRebQeUjKkS2xsYz8AzxoEsNG0Sb0pzWnmgadrJlA6xrySVbLY198gLOyP/exec';
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7OULPu1mVDRSpHV296IhlWZXWVmwhwBYvt6El0G2QCc7_v5e2MmCWwxXthipZQIU/exec';
     const adminUser = localStorage.getItem('admin_user');
     const adminPassword = localStorage.getItem('admin_password');
 
@@ -339,19 +347,19 @@
         let today_cnt = 0;
 
         // Correct India Date
-        const todayIST = new Intl.DateTimeFormat('en-IN', { 
-            timeZone: 'Asia/Kolkata',
-            day: '2-digit', month: '2-digit', year: 'numeric' 
+        const todayIST = new Intl.DateTimeFormat('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          day: '2-digit', month: '2-digit', year: 'numeric'
         }).format(new Date());
 
         allApps.forEach(app => {
           if (app.status === 'Pending') pending++;
           if (app.status === 'Accepted') accepted++;
-          
+
           if (app.date) {
-            const appIST = new Intl.DateTimeFormat('en-IN', { 
-                timeZone: 'Asia/Kolkata',
-                day: '2-digit', month: '2-digit', year: 'numeric' 
+            const appIST = new Intl.DateTimeFormat('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              day: '2-digit', month: '2-digit', year: 'numeric'
             }).format(new Date(app.date));
             if (appIST === todayIST) today_cnt++;
           }

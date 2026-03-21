@@ -305,7 +305,10 @@
     }
 
     @media print {
-      @page { margin: 0.5cm; }
+      @page {
+        margin: 0.5cm;
+      }
+
       body {
         background: white !important;
         padding: 0 !important;
@@ -386,8 +389,15 @@
         margin-bottom: 15px !important;
       }
 
-      .field-label { color: #64748b !important; font-size: 10px !important; }
-      .field-value { color: #000 !important; font-size: 12px !important; }
+      .field-label {
+        color: #64748b !important;
+        font-size: 10px !important;
+      }
+
+      .field-value {
+        color: #000 !important;
+        font-size: 12px !important;
+      }
 
       .docs-list {
         display: grid !important;
@@ -406,14 +416,21 @@
         border-bottom: 1px dashed #cbd5e1 !important;
       }
 
-      .consent-box { 
-        border-top: 1px solid #e2e8f0 !important; 
+      .consent-box {
+        border-top: 1px solid #e2e8f0 !important;
         margin-top: 30px !important;
         padding: 20px 30px !important;
         page-break-inside: avoid !important;
       }
-      .signature-area { margin-top: 50px !important; }
-      .sig-line { border-top-color: #000 !important; color: #000 !important; }
+
+      .signature-area {
+        margin-top: 50px !important;
+      }
+
+      .sig-line {
+        border-top-color: #000 !important;
+        color: #000 !important;
+      }
     }
 
     /* Print Header Styles */
@@ -552,11 +569,19 @@
       border: none;
     }
 
-    .doc-item { cursor: pointer; }
-    .doc-item:hover { transform: translateY(-2px); border-color: var(--primary); }
+    .doc-item {
+      cursor: pointer;
+    }
+
+    .doc-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
 
     @media print {
-      #previewModal { display: none !important; }
+      #previewModal {
+        display: none !important;
+      }
     }
   </style>
 </head>
@@ -580,10 +605,10 @@
   <div class="confirm-container" id="mainContainer">
     <!-- PRINT HEADER -->
     <div class="print-header">
-      <img src="assets/img/dr logo500.png" alt="School Logo">
+      <img src="assets/img/dr logo500.png" alt="School Logo" class="school-logo-display">
       <div>
-        <h2>Dr. A.P.J. Abdul Kalam Inter College</h2>
-        <p>Belwariya Jungle Basti,U.P.-272161 <br>Affiliated to U.P. Board | Recognition No: 123456</p>
+        <h2 class="school-name-display">Dr. A.P.J. Abdul Kalam Inter College</h2>
+        <p>Belwariya Jungle Basti, U.P.- 272161 <br>Admission Portal | Year 2026-27</p>
       </div>
     </div>
     <div class="hero-banner">
@@ -629,8 +654,24 @@
               <p class="field-value" id="val_blood_group"></p>
             </div>
             <div>
+              <p class="field-label">Religion</p>
+              <p class="field-value" id="val_religion"></p>
+            </div>
+            <div>
+              <p class="field-label">Category</p>
+              <p class="field-value" id="val_category"></p>
+            </div>
+            <div>
+              <p class="field-label">Caste</p>
+              <p class="field-value" id="val_caste"></p>
+            </div>
+            <div>
               <p class="field-label">Class Applied</p>
               <p class="field-value" id="val_class_applied"></p>
+            </div>
+            <div id="medium_box" style="display:none">
+              <p class="field-label">Medium of Education</p>
+              <p class="field-value" id="val_medium"></p>
             </div>
             <div id="stream_box" style="display:none">
               <p class="field-label">Stream</p>
@@ -667,25 +708,26 @@
               <p class="field-value" id="val_full_address"></p>
             </div>
           </div>
-      </div> <!-- end info-section (Contact) -->
+        </div> <!-- end info-section (Contact) -->
 
-    </div> <!-- Close student-details -->
-  </div> <!-- Close content-layout -->
+      </div> <!-- Close student-details -->
+    </div> <!-- Close content-layout -->
 
-  <div class="info-section wide-section">
-    <h3 class="section-title"><i class="fa-solid fa-file-shield"></i> Identity & Documents</h3>
-    <div class="docs-list" id="docsContainer">
-      <!-- Documents injected here -->
+    <div class="info-section wide-section">
+      <h3 class="section-title"><i class="fa-solid fa-file-shield"></i> Identity & Documents</h3>
+      <div class="docs-list" id="docsContainer">
+        <!-- Documents injected here -->
+      </div>
     </div>
-  </div>
 
-  <!-- PARENT CONSENT & VERIFICATION -->
-  <div class="consent-box">
+    <!-- PARENT CONSENT & VERIFICATION -->
+    <div class="consent-box">
       <h3 class="section-title"><i class="fa-solid fa-file-signature"></i> Parent/Guardian Consent</h3>
       <p class="text-xs text-slate-500 leading-relaxed italic">
         I hereby declare that all the information provided in this admission form is true and correct to the best of
         my knowledge and belief. I understand that any false statement or omission may lead to the cancellation of
-        my ward's admission. I agree to abide by the rules and regulations of Dr. A.P.J. Abdul Kalam Inter College.
+        my ward's admission. I agree to abide by the rules and regulations of <span class="school-name-display">Dr.
+          A.P.J. Abdul Kalam Inter College</span>.
       </p>
 
       <div class="signature-area">
@@ -705,184 +747,225 @@
         </div>
       </div>
 
-    <div class="actions-bar">
-      <a href="index.html" class="btn btn-home">
-        <i class="fa-solid fa-arrow-left"></i> Back to Home
-      </a>
-      <div style="display: flex; gap: 10px;">
-        <button onclick="window.print()" class="btn btn-print">
-          <i class="fa-solid fa-download"></i> Download / Print
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- FILE PREVIEW MODAL -->
-  <div id="previewModal">
-    <div class="preview-content">
-      <div class="preview-header">
-        <h3 id="previewTitle" style="margin:0; font-size:16px;">Document Preview</h3>
-        <div style="display: flex; gap: 10px; align-items: center;">
-          <a id="previewDownload" href="#" target="_blank" style="color: var(--primary); font-size: 14px; text-decoration: none;">
-            <i class="fa-solid fa-external-link"></i> Open Original
-          </a>
-          <button onclick="closePreview()" class="close-btn">
-            <i class="fa-solid fa-xmark"></i>
+      <div class="actions-bar">
+        <a href="index.html" class="btn btn-home">
+          <i class="fa-solid fa-arrow-left"></i> Back to Home
+        </a>
+        <div style="display: flex; gap: 10px;">
+          <button onclick="window.print()" class="btn btn-print">
+            <i class="fa-solid fa-download"></i> Download / Print
           </button>
         </div>
       </div>
-      <div class="preview-body">
-        <iframe id="previewFrame" src=""></iframe>
+
+      <!-- FILE PREVIEW MODAL -->
+      <div id="previewModal">
+        <div class="preview-content">
+          <div class="preview-header">
+            <h3 id="previewTitle" style="margin:0; font-size:16px;">Document Preview</h3>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <a id="previewDownload" href="#" target="_blank"
+                style="color: var(--primary); font-size: 14px; text-decoration: none;">
+                <i class="fa-solid fa-external-link"></i> Open Original
+              </a>
+              <button onclick="closePreview()" class="close-btn">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+          </div>
+          <div class="preview-body">
+            <iframe id="previewFrame" src=""></iframe>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <footer style="text-align: center; margin-top: 30px; color: #94a3b8; font-size: 13px;">
-    &copy; 2026 Dr. A.P.J. Abdul Kalam Inter College. All rights reserved.
-  </footer>
+      <footer style="text-align: center; margin-top: 30px; color: #94a3b8; font-size: 13px;">
+        &copy; 2026 <span class="school-name-display">Dr. A.P.J. Abdul Kalam Inter College</span>. All rights reserved.
+      </footer>
 
-  <script>
-    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVz4w18ShRebQeUjKkS2xsYz8AzxoEsNG0Sb0pzWnmgadrJlA6xrySVbLY198gLOyP/exec';
+      <script>
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7OULPu1mVDRSpHV296IhlWZXWVmwhwBYvt6El0G2QCc7_v5e2MmCWwxXthipZQIU/exec';
 
-    function formatIST(dateStr) {
-      if (!dateStr) return { date: '—', time: '' };
-      try {
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return { date: dateStr, time: '' };
-        const datePart = new Intl.DateTimeFormat('en-IN', {
-          timeZone: 'Asia/Kolkata',
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric'
-        }).format(d);
-        const timePart = new Intl.DateTimeFormat('en-IN', {
-          timeZone: 'Asia/Kolkata',
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true
-        }).format(d);
-        return { date: datePart, time: timePart };
-      } catch (e) { return { date: dateStr, time: '' }; }
-    }
+        const schoolMapping = {
+          primary: {
+            en: "R.S.Y. Convent School",
+            hi: "आर.एस.वाई. कॉन्वेंट स्कूल",
+            logo: "assets/img/rsy_logo.png"
+          },
+          middle: {
+            en: "Late Dal Sringari Memorial Balika Junior High School",
+            hi: "स्व. दल श्रृंगारी मेमोरियल बालिका जूनियर हाई स्कूल",
+            logo: "assets/img/dal_sringari_logo.png"
+          },
+          secondary: {
+            en: "Dr. A.P.J. Abdul Kalam Inter College",
+            hi: "डॉ. ए.पी.जे. अब्दुल कलाम इंटर कॉलेज",
+            logo: "assets/img/dr logo500.png"
+          },
+          higher_secondary: {
+            en: "Dr. A.P.J. Abdul Kalam Inter College",
+            hi: "डॉ. ए.पी.जे. अब्दुल कलाम इंटर कॉलेज",
+            logo: "assets/img/dr logo500.png"
+          }
+        };
 
-    function formatIndDate(dateStr) {
-      if (!dateStr) return '—';
-      try {
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
-        return new Intl.DateTimeFormat('en-IN', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        }).format(d).replace(/\//g, '-');
-      } catch (e) { return dateStr; }
-    }
+        function formatIST(dateStr) {
+          if (!dateStr) return { date: '—', time: '' };
+          try {
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return { date: dateStr, time: '' };
+            const datePart = new Intl.DateTimeFormat('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric'
+            }).format(d);
+            const timePart = new Intl.DateTimeFormat('en-IN', {
+              timeZone: 'Asia/Kolkata',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            }).format(d);
+            return { date: datePart, time: timePart };
+          } catch (e) { return { date: dateStr, time: '' }; }
+        }
 
-    // Google Drive URL Helpers
-    function getDriveId(url) {
-      if (!url) return null;
-      if (url.includes('/d/')) return url.split('/d/')[1].split('/')[0];
-      const match = url.match(/[?&]id=([^&]+)/);
-      return match ? match[1] : null;
-    }
+        function formatIndDate(dateStr) {
+          if (!dateStr) return '—';
+          try {
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            return new Intl.DateTimeFormat('en-IN', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric'
+            }).format(d).replace(/\//g, '-');
+          } catch (e) { return dateStr; }
+        }
 
-    function getPreviewUrl(url) {
-      const id = getDriveId(url);
-      return id ? `https://drive.google.com/file/d/${id}/preview` : url;
-    }
+        // Google Drive URL Helpers
+        function getDriveId(url) {
+          if (!url) return null;
+          if (url.includes('/d/')) return url.split('/d/')[1].split('/')[0];
+          const match = url.match(/[?&]id=([^&]+)/);
+          return match ? match[1] : null;
+        }
 
-    function getThumbUrl(url) {
-      const id = getDriveId(url);
-      return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w500` : url;
-    }
+        function getPreviewUrl(url) {
+          const id = getDriveId(url);
+          return id ? `https://drive.google.com/file/d/${id}/preview` : url;
+        }
 
-    function openPreview(url, title) {
-      const modal = document.getElementById('previewModal');
-      const frame = document.getElementById('previewFrame');
-      const titleEl = document.getElementById('previewTitle');
-      const downloadLink = document.getElementById('previewDownload');
+        function getThumbUrl(url) {
+          const id = getDriveId(url);
+          return id ? `https://drive.google.com/thumbnail?id=${id}&sz=w500` : url;
+        }
 
-      titleEl.textContent = title;
-      downloadLink.href = url.replace('export=view&', '');
-      frame.src = getPreviewUrl(url);
-      modal.classList.add('active');
-    }
+        function openPreview(url, title) {
+          const modal = document.getElementById('previewModal');
+          const frame = document.getElementById('previewFrame');
+          const titleEl = document.getElementById('previewTitle');
+          const downloadLink = document.getElementById('previewDownload');
 
-    function closePreview() {
-      document.getElementById('previewModal').classList.remove('active');
-      document.getElementById('previewFrame').src = '';
-    }
+          titleEl.textContent = title;
+          downloadLink.href = url.replace('export=view&', '');
+          frame.src = getPreviewUrl(url);
+          modal.classList.add('active');
+        }
 
-    async function loadApplication(retryCount = 0) {
-      const urlParams = new URLSearchParams(window.location.search);
-      const id = urlParams.get('id');
+        function closePreview() {
+          document.getElementById('previewModal').classList.remove('active');
+          document.getElementById('previewFrame').src = '';
+        }
 
-      if (!id) {
-        window.location.href = 'index.html';
-        return;
-      }
+        async function loadApplication(retryCount = 0) {
+          const urlParams = new URLSearchParams(window.location.search);
+          const id = urlParams.get('id');
 
-      try {
-        const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_by_id&id=${id}`);
-        const result = await response.json();
-
-        if (!result.success || !result.data) {
-          // If not found, retry once after a delay (Google Sheets sometimes has latency)
-          if (retryCount < 2) {
-            console.log(`Retrying... Attempt ${retryCount + 1}`);
-            setTimeout(() => loadApplication(retryCount + 1), 2000);
+          if (!id) {
+            window.location.href = 'index.html';
             return;
           }
-          throw new Error('Application details not found yet. Please refresh in a moment.');
-        }
 
-        const app = result.data;
+          try {
+            const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=get_by_id&id=${id}`);
+            const result = await response.json();
 
-        // Fill values
-        document.getElementById('val_student_name').textContent = app.student_name;
-        document.getElementById('val_dob').textContent = formatIndDate(app.dob);
-        document.getElementById('val_gender').textContent = app.gender;
-        document.getElementById('val_blood_group').textContent = app.blood_group || '—';
-        document.getElementById('val_class_applied').textContent = app.class_applied;
-        document.getElementById('val_class_verif').textContent = app.class_applied;
-        document.getElementById('display_id').textContent = '#' + String(app.id).padStart(4, '0');
-        
-        const ist = formatIST(app.date);
-        document.getElementById('submit_date').textContent = ist.date;
-        document.getElementById('submit_time').textContent = ist.time;
+            if (!result.success || !result.data) {
+              // If not found, retry once after a delay (Google Sheets sometimes has latency)
+              if (retryCount < 2) {
+                console.log(`Retrying... Attempt ${retryCount + 1}`);
+                setTimeout(() => loadApplication(retryCount + 1), 2000);
+                return;
+              }
+              throw new Error('Application details not found yet. Please refresh in a moment.');
+            }
 
-        document.getElementById('val_father_name').textContent = app.father_name;
-        document.getElementById('val_mother_name').textContent = app.mother_name;
-        document.getElementById('val_phone').textContent = app.phone;
-        document.getElementById('val_email').textContent = app.email || 'N/A';
-        document.getElementById('val_full_address').textContent = `${app.address}, ${app.city}, ${app.state} - ${app.pincode}`;
+            const app = result.data;
+            const level = app.school_level || 'primary';
+            const schoolData = schoolMapping[level];
+            const currentLang = localStorage.getItem('lang') || 'en';
+            const schoolName = schoolData[currentLang];
+            const schoolLogo = schoolData.logo;
 
-        if (app.stream) {
-          document.getElementById('stream_box').style.display = 'block';
-          document.getElementById('val_stream').textContent = app.stream;
-        }
+            // Branding
+            document.querySelectorAll('.school-name-display').forEach(el => el.textContent = schoolName);
+            document.querySelectorAll('.school-logo-display').forEach(el => el.src = schoolLogo);
+            document.title = `Application Submitted - ${schoolName}`;
 
-        if (app.previous_school) {
-          document.getElementById('prev_school_box').style.display = 'block';
-          document.getElementById('val_previous_school').textContent = app.previous_school;
-        } else {
-          document.getElementById('prev_school_box').style.display = 'none';
-        }
+            // Fill values
+            document.getElementById('val_student_name').textContent = app.student_name;
+            document.getElementById('val_dob').textContent = formatIndDate(app.dob);
+            document.getElementById('val_gender').textContent = app.gender;
+            document.getElementById('val_religion').textContent = app.religion || '—';
+            document.getElementById('val_category').textContent = app.category || '—';
+            document.getElementById('val_caste').textContent = app.caste || '—';
+            document.getElementById('val_blood_group').textContent = app.blood_group || '—';
+            document.getElementById('val_class_applied').textContent = app.class_applied;
+            document.getElementById('val_class_verif').textContent = app.class_applied;
+            document.getElementById('display_id').textContent = '#' + String(app.id).padStart(4, '0');
 
-        if (app.photo_url) {
-          const thumb = getThumbUrl(app.photo_url);
-          document.getElementById('photo_container').innerHTML = `<img src="${thumb}" alt="Student Photo">`;
-        }
+            const ist = formatIST(app.date);
+            document.getElementById('submit_date').textContent = ist.date;
+            document.getElementById('submit_time').textContent = ist.time;
 
-        // Docs
-        const docsContainer = document.getElementById('docsContainer');
-        const docs = [
-          { label: 'Aadhaar Front', url: app.aadhaar_front_url },
-          { label: 'Aadhaar Back', url: app.aadhaar_back_url },
-          { label: 'Marksheet', url: app.marksheet_url }
-        ];
+            document.getElementById('val_father_name').textContent = app.father_name;
+            document.getElementById('val_mother_name').textContent = app.mother_name;
+            document.getElementById('val_phone').textContent = app.phone;
+            document.getElementById('val_email').textContent = app.email || 'N/A';
+            document.getElementById('val_full_address').textContent = `${app.address}, ${app.city}, ${app.state} - ${app.pincode}`;
 
-        docsContainer.innerHTML = docs.map(doc => `
+            if (app.medium) {
+              document.getElementById('medium_box').style.display = 'block';
+              document.getElementById('val_medium').textContent = app.medium;
+            }
+
+            if (app.stream) {
+              document.getElementById('stream_box').style.display = 'block';
+              document.getElementById('val_stream').textContent = app.stream;
+            }
+
+            if (app.previous_school) {
+              document.getElementById('prev_school_box').style.display = 'block';
+              document.getElementById('val_previous_school').textContent = app.previous_school;
+            } else {
+              document.getElementById('prev_school_box').style.display = 'none';
+            }
+
+            if (app.photo_url) {
+              const thumb = getThumbUrl(app.photo_url);
+              document.getElementById('photo_container').innerHTML = `<img src="${thumb}" alt="Student Photo">`;
+            }
+
+            // Docs
+            const docsContainer = document.getElementById('docsContainer');
+            const docs = [
+              { label: 'Aadhaar Front', url: app.aadhaar_front_url },
+              { label: 'Aadhaar Back', url: app.aadhaar_back_url },
+              { label: 'Marksheet', url: app.marksheet_url }
+            ];
+
+            docsContainer.innerHTML = docs.map(doc => `
           <div class="doc-item" onclick="openPreview('${doc.url}', '${doc.label}')">
             ${doc.url ? `<img src="${getThumbUrl(doc.url)}" class="doc-img">` : `<i class="fa-solid fa-file-circle-xmark doc-icon-placeholder" style="color:#cbd5e1"></i>`}
             <div class="doc-name">${doc.label}</div>
@@ -890,16 +973,16 @@
           </div>
         `).join('');
 
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('mainContainer').style.display = 'block';
-      } catch (err) {
-        console.error(err);
-        document.getElementById('loading').innerHTML = '<p style="color:red">Application received! However, detailed view is currently only available for admins.</p><br><a href="index.html" class="btn btn-home">Back to Home</a>';
-      }
-    }
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+          } catch (err) {
+            console.error(err);
+            document.getElementById('loading').innerHTML = '<p style="color:red">Application received! However, detailed view is currently only available for admins.</p><br><a href="index.html" class="btn btn-home">Back to Home</a>';
+          }
+        }
 
-    window.addEventListener('DOMContentLoaded', loadApplication);
-  </script>
+        window.addEventListener('DOMContentLoaded', loadApplication);
+      </script>
 </body>
 
 </html>

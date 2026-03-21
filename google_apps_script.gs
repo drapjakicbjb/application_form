@@ -1,201 +1,271 @@
 /**
- * Google Apps Script Backend for School Admission System
- * This script should be deployed as a Web App (Execute as: Me, Access: Anyone)
+ * Google Apps Script - School Admission System (Infallible Version)
+ * Deployment: Web App (Me / Anyone)
  */
 
-const SHEET_NAME = 'Applications';
-const ADMIN_SHEET_NAME = 'Admins';
-const FOLDER_ID = '1LF2HEDtvxsRJ6ICbuUDYP9NoRwbn1_y1'; // User must replace this
+// 1. CONFIGURATION
+const SPREADSHEET_ID = ''; // Optional: Paste your Sheet ID here if seeing connection errors
+const FOLDER_ID = '1LF2HEDtvxsRJ6ICbuUDYP9NoRwbn1_y1'; 
+const ADMIN_SHEET = 'Admins';
+const CONFIG_SHEET = 'System_Config';
+
+const LEVEL_SHEETS = {
+  'primary': 'Primary_Admissions',
+  'middle': 'Middle_Admissions',
+  'secondary': 'Secondary_Higher_Admissions',
+  'higher_secondary': 'Secondary_Higher_Admissions'
+};
+
+const APP_HEADERS = [
+  'ID', 'Status', 'Date', 'School Level', 'Student Name', 'DOB', 'Gender', 'Religion', 'Category', 'Caste', 
+  'Blood Group', 'Aadhaar', 'Class Applied', 'Medium', 'Stream', 'Previous School',
+  'Father Name', 'Mother Name', 'Phone', 'Email', 'Address', 'City', 'State', 'Pincode',
+  'Photo URL', 'Aadhaar Front URL', 'Aadhaar Back URL', 'Marksheet URL'
+];
+
+// --- CORE FUNCTIONS ---
 
 /**
- * Handle POST requests (Form Submission)
+ * Robust Spreadsheet Connection
  */
-function doPost(e) {
-  try {
-    const data = JSON.parse(e.postData.contents);
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = ss.getSheetByName(SHEET_NAME);
-    
-    // Create sheet if it doesn't exist
-    if (!sheet) {
-      sheet = ss.insertSheet(SHEET_NAME);
-      const headers = [
-        'ID', 'Status', 'Date', 'Student Name', 'DOB', 'Gender', 'Blood Group', 'Aadhaar', 'Class Applied', 'Stream', 'Previous School',
-        'Father Name', 'Mother Name', 'Phone', 'Email', 'Address', 'City', 'State', 'Pincode',
-        'Photo URL', 'Aadhaar Front URL', 'Aadhaar Back URL', 'Marksheet URL'
-      ];
-      sheet.appendRow(headers);
-    }
-
-    const lastRow = sheet.getLastRow();
-    const id = lastRow === 1 ? 1 : lastRow;
-    const date = new Date().toISOString();
-
-    // Handle File Uploads to Google Drive
-    let folder;
-    try {
-      folder = DriveApp.getFolderById(FOLDER_ID);
-    } catch (e) {
-      console.error("Folder ID error: " + e.message);
-    }
-
-    const ts = Utilities.formatDate(new Date(), "GMT+5:30", "yyyy-MM-dd_HH-mm-ss");
-    
-    const uploadFile = (base64, name, mime) => {
-      if (!base64 || !folder) return '';
-      try {
-        const finalName = `${name}_${ts}`;
-        const blob = Utilities.newBlob(Utilities.base64Decode(base64), mime, finalName);
-        const file = folder.createFile(blob);
-        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
-        return `https://drive.google.com/uc?export=view&id=${file.getId()}`;
-      } catch (err) {
-        console.error("Upload error: " + err.message);
-        return '';
-      }
-    };
-
-    const photoUrl = uploadFile(data.photo, `${data.student_name}_photo`, data.photo_mime);
-    const aadhaarFrontUrl = uploadFile(data.aadhaar_front, `${data.student_name}_aadhaar_front`, data.aadhaar_front_mime);
-    const aadhaarBackUrl = uploadFile(data.aadhaar_back, `${data.student_name}_aadhaar_back`, data.aadhaar_back_mime);
-    const marksheetUrl = uploadFile(data.marksheet, `${data.student_name}_marksheet`, data.marksheet_mime);
-
-    // Append Data to Sheet
-    const row = [
-      id, 'Pending', date, data.student_name, data.dob, data.gender, data.blood_group || '', data.aadhaar, data.class_applied, data.stream || '', data.previous_school || '',
-      data.father_name, data.mother_name, data.phone, data.email, data.address, data.city, data.state, data.pincode,
-      photoUrl, aadhaarFrontUrl, aadhaarBackUrl, marksheetUrl
-    ];
-    sheet.appendRow(row);
-
-    return ContentService.createTextOutput(JSON.stringify({ success: true, id: id }))
-      .setMimeType(ContentService.MimeType.JSON);
-
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ success: false, message: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
+function getSS() {
+  let ss = null;
+  if (SPREADSHEET_ID && SPREADSHEET_ID.length > 5) {
+    try { ss = SpreadsheetApp.openById(SPREADSHEET_ID); } catch(e) {}
   }
+  
+  if (!ss) {
+    try { ss = SpreadsheetApp.getActiveSpreadsheet(); } catch(e) {}
+  }
+  
+  if (!ss) {
+    try { ss = SpreadsheetApp.getActive(); } catch(e) {}
+  }
+
+  if (!ss) {
+    throw new Error("Spreadsheet NOT FOUND. Please provide SPREADSHEET_ID or bind script to long Sheet.");
+  }
+  return ss;
 }
 
 /**
- * Verify Admin Credentials
+ * Get or Create a sheet safely
  */
-function verifyAdmin(username, password) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let adminSheet = ss.getSheetByName(ADMIN_SHEET_NAME);
+function getSheet(sheetName, headers) {
+  const ss = getSS();
+  let sheet = ss.getSheetByName(sheetName);
   
-  if (!adminSheet) {
-    adminSheet = ss.insertSheet(ADMIN_SHEET_NAME);
-    adminSheet.appendRow(['Username', 'Password']);
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    if (headers) {
+      sheet.appendRow(headers);
+      sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold').setBackground('#f1f5f9');
+    }
+  } else if (headers && sheet.getLastRow() === 0) {
+    sheet.appendRow(headers);
+    sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold').setBackground('#f1f5f9');
   }
-  
-  const data = adminSheet.getDataRange().getValues();
+  return sheet;
+}
+
+/**
+ * Global ID counter
+ */
+function getNextGlobalId() {
+  const config = getSheet(CONFIG_SHEET, ['Key', 'Value']);
+  const data = config.getDataRange().getValues();
+  let lastId = 0;
+  let rowIdx = -1;
+
   for (let i = 1; i < data.length; i++) {
-    const sheetUser = String(data[i][0]).trim();
-    const sheetPass = String(data[i][1]).trim();
-    if (sheetUser === String(username).trim() && sheetPass === String(password).trim()) {
-      return true;
+    if (data[i][0] === 'Last_ID') {
+      lastId = parseInt(data[i][1]) || 0;
+      rowIdx = i + 1;
+      break;
+    }
+  }
+
+  const nextId = lastId + 1;
+  if (rowIdx === -1) {
+    config.appendRow(['Last_ID', nextId]);
+  } else {
+    config.getRange(rowIdx, 2).setValue(nextId);
+  }
+  return nextId;
+}
+
+/**
+ * File Uploads
+ */
+function uploadToDrive(base64, fileName, mimeType) {
+  if (!base64 || !FOLDER_ID) return '';
+  try {
+    const folder = DriveApp.getFolderById(FOLDER_ID);
+    const ts = Utilities.formatDate(new Date(), "GMT+5:30", "yyyy-MM-dd_HH-mm-ss");
+    const blob = Utilities.newBlob(Utilities.base64Decode(base64), mimeType, `${fileName}_${ts}`);
+    const file = folder.createFile(blob);
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    return `https://drive.google.com/uc?export=view&id=${file.getId()}`;
+  } catch (err) {
+    return '';
+  }
+}
+
+// --- ENDPOINTS ---
+
+function doPost(e) {
+  try {
+    if (!e || !e.postData || !e.postData.contents) {
+      return ContentService.createTextOutput(JSON.stringify({ success: false, message: "No data received. Manual Run not supported." })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const data = JSON.parse(e.postData.contents);
+    const targetName = LEVEL_SHEETS[data.school_level] || 'Other_Admissions';
+    const sheet = getSheet(targetName, APP_HEADERS);
+
+    const id = getNextGlobalId();
+    const date = new Date().toISOString();
+
+    const photo = uploadToDrive(data.photo, `${data.student_name}_photo`, data.photo_mime);
+    const adf = uploadToDrive(data.aadhaar_front, `${data.student_name}_af`, data.aadhaar_front_mime);
+    const adb = uploadToDrive(data.aadhaar_back, `${data.student_name}_ab`, data.aadhaar_back_mime);
+    const mark = uploadToDrive(data.marksheet, `${data.student_name}_mark`, data.marksheet_mime);
+
+    const row = [
+      id, 'Pending', date, data.school_level || '', data.student_name, data.dob, data.gender, data.religion || '', data.category || '', data.caste || '',
+      data.blood_group || '', data.aadhaar, data.class_applied, data.medium || '', data.stream || '', data.previous_school || '',
+      data.father_name, data.mother_name, data.phone, data.email, data.address, data.city, data.state, data.pincode,
+      photo, adf, adb, mark
+    ];
+
+    sheet.appendRow(row);
+    return ContentService.createTextOutput(JSON.stringify({ success: true, id: id })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, message: err.toString() })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  try {
+    if (!e || !e.parameter) {
+       return ContentService.createTextOutput(JSON.stringify({ success: false, message: "No parameters." })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const action = e.parameter.action;
+    const id = e.parameter.id;
+
+    if (action === 'get_by_id' && id) {
+      const all = aggregateAll();
+      const app = all.find(a => a.id == id);
+      return ContentService.createTextOutput(JSON.stringify({ success: !!app, data: app })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (!verifyAdmin(e.parameter.username, e.parameter.password)) {
+      return ContentService.createTextOutput(JSON.stringify({ success: false, message: 'Unauthorized' })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const all = aggregateAll();
+
+    if (action === 'get_stats') {
+      return ContentService.createTextOutput(JSON.stringify({
+        success: true,
+        stats: {
+          total: all.length,
+          pending: all.filter(a => a.status === 'Pending').length,
+          accepted: all.filter(a => a.status === 'Accepted').length
+        }
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (action === 'update_status') {
+      const status = e.parameter.status;
+      const success = updateRow(id, 2, status);
+      return ContentService.createTextOutput(JSON.stringify({ success: success })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    if (action === 'delete_application') {
+      const success = deleteRowById(id);
+      return ContentService.createTextOutput(JSON.stringify({ success: success })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({ success: true, data: all })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ success: false, message: err.toString() })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// --- HELPERS ---
+
+function verifyAdmin(user, pass) {
+  if (!user || !pass) return false;
+  const sheet = getSheet(ADMIN_SHEET, ['Username', 'Password']);
+  const data = sheet.getDataRange().getValues();
+  if (data.length <= 1) {
+    sheet.appendRow(['admin', '12345']);
+    return (user === 'admin' && pass === '12345');
+  }
+  for (let i = 1; i < data.length; i++) {
+    if (String(data[i][0]).trim() === String(user).trim() && String(data[i][1]).trim() === String(pass).trim()) return true;
+  }
+  return false;
+}
+
+function aggregateAll() {
+  const ss = getSS();
+  const all = [];
+  const sheets = ss.getSheets();
+  const reserved = [ADMIN_SHEET, CONFIG_SHEET];
+
+  sheets.forEach(s => {
+    const name = s.getName();
+    if (reserved.includes(name)) return;
+    const vals = s.getDataRange().getValues();
+    if (vals.length <= 1) return;
+    const heads = vals.shift();
+    vals.forEach(row => {
+      const obj = {};
+      heads.forEach((h, i) => {
+        const key = h.toString().trim().toLowerCase().replace(/ /g, '_');
+        obj[key] = row[i];
+      });
+      all.push(obj);
+    });
+  });
+  return all.sort((a, b) => new Date(b.date) - new Date(a.date));
+}
+
+function updateRow(id, col, val) {
+  const ss = getSS();
+  const sheets = ss.getSheets();
+  const reserved = [ADMIN_SHEET, CONFIG_SHEET];
+  for (const s of sheets) {
+    if (reserved.includes(s.getName())) continue;
+    const data = s.getDataRange().getValues();
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] == id) {
+        s.getRange(i + 1, col).setValue(val);
+        return true;
+      }
     }
   }
   return false;
 }
 
-/**
- * Handle GET requests (Fetch Data for Admin)
- */
-function doGet(e) {
-  try {
-    const action = e.parameter.action;
-    const id = e.parameter.id;
-    
-    // Public action: get_by_id
-    // This allows the confirmation page to show details to the student
-    if (action === 'get_by_id' && id) {
-      const ss = SpreadsheetApp.getActiveSpreadsheet();
-      const sheet = ss.getSheetByName(SHEET_NAME);
-      if (!sheet) return ContentService.createTextOutput(JSON.stringify({ success: false, message: 'Sheet not found' })).setMimeType(ContentService.MimeType.JSON);
-      
-      const data = sheet.getDataRange().getValues();
-      const headers = data.shift();
-      
-      for (let i = 0; i < data.length; i++) {
-        if (data[i][0] == id) {
-          const obj = {};
-          headers.forEach((h, j) => obj[h.toString().trim().toLowerCase().replace(/ /g, '_')] = data[i][j]);
-          return ContentService.createTextOutput(JSON.stringify({ success: true, data: obj }))
-            .setMimeType(ContentService.MimeType.JSON);
-        }
+function deleteRowById(id) {
+  const ss = getSS();
+  const sheets = ss.getSheets();
+  const reserved = [ADMIN_SHEET, CONFIG_SHEET];
+  for (const s of sheets) {
+    if (reserved.includes(s.getName())) continue;
+    const data = s.getDataRange().getValues();
+    for (let i = 1; i < data.length; i++) {
+      if (data[i][0] == id) {
+        s.deleteRow(i + 1);
+        return true;
       }
-      return ContentService.createTextOutput(JSON.stringify({ success: false, message: 'Application not found' }))
-        .setMimeType(ContentService.MimeType.JSON);
     }
-
-    const username = e.parameter.username;
-    const password = e.parameter.password;
-
-    if (!verifyAdmin(username, password)) {
-      return ContentService.createTextOutput(JSON.stringify({ success: false, message: 'Invalid Credentials' }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName(SHEET_NAME);
-    if (!sheet) return ContentService.createTextOutput(JSON.stringify({ data: [] })).setMimeType(ContentService.MimeType.JSON);
-    
-    const data = sheet.getDataRange().getValues();
-    const headers = data.shift();
-    
-    const jsonData = data.map(row => {
-      const obj = {};
-      headers.forEach((h, i) => obj[h.toString().trim().toLowerCase().replace(/ /g, '_')] = row[i]);
-      return obj;
-    });
-
-    if (action === 'get_stats') {
-      const stats = {
-        total: jsonData.length,
-        pending: jsonData.filter(i => i.status === 'Pending').length,
-        accepted: jsonData.filter(i => i.status === 'Accepted').length
-      };
-      return ContentService.createTextOutput(JSON.stringify({ success: true, stats: stats }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-
-    if (action === 'update_status') {
-      const id = e.parameter.id;
-      const newStatus = e.parameter.status;
-      const range = sheet.getDataRange();
-      const values = range.getValues();
-      for (let i = 1; i < values.length; i++) {
-        if (values[i][0] == id) {
-          sheet.getRange(i + 1, 2).setValue(newStatus); // Status is column B (2)
-          return ContentService.createTextOutput(JSON.stringify({ success: true }))
-            .setMimeType(ContentService.MimeType.JSON);
-        }
-      }
-      return ContentService.createTextOutput(JSON.stringify({ success: false, message: 'ID not found' }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-
-    if (action === 'delete_application') {
-      const id = e.parameter.id;
-      const values = sheet.getDataRange().getValues();
-      for (let i = 1; i < values.length; i++) {
-        if (values[i][0] == id) {
-          sheet.deleteRow(i + 1);
-          return ContentService.createTextOutput(JSON.stringify({ success: true }))
-            .setMimeType(ContentService.MimeType.JSON);
-        }
-      }
-      return ContentService.createTextOutput(JSON.stringify({ success: false, message: 'ID not found' }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-
-    return ContentService.createTextOutput(JSON.stringify({ success: true, data: jsonData }))
-      .setMimeType(ContentService.MimeType.JSON);
-
-  } catch (err) {
-    return ContentService.createTextOutput(JSON.stringify({ success: false, message: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
   }
+  return false;
 }
